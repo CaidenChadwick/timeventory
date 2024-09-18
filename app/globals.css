@@ -3,14 +3,36 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #112C81;
+  --foreground: #0c5ab9;
+}
+
+div {
+  text-align: center;
+  margin: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-color: #0c5ab9;
+}
+
+p.orange {
+  color: #f8af6a;
+}
+
+
+a{
+  margin: 20px;
+}
+
+h1 {
+  font-size: larger;
+  font-style: italic;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #112C81;
+    --foreground: #91dbf2;
   }
 }
 
