@@ -8,6 +8,7 @@ const navBar: React.FC = () => {
             <a href = "/">Home</a>
             <a href = "/user">User</a>
             <a href = "/error">404</a>
+            <a href = "/login">login</a>
         </nav>
     </div>
   );
