@@ -35,7 +35,6 @@ export default function RootLayout({
         {children}
 
         <BootstrapClient />
-
       </body>
     </html>
   );
