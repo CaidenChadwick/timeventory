@@ -27,5 +27,5 @@ export async function registerUserAction(registrationData: RegistrationData): Pr
     cookieObj.set('sessionToken', sessionToken);
 
     // Redirect to profile page
-    redirect('/profile');
+    redirect('/user');
 }
