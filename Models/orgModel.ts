@@ -137,3 +137,34 @@ export async function getOrgOwnerIdByName(orgName: string): Promise<Status>{
     }
     return status
 }
+
+//if good, status is true and "ok"; else, success is false
+export async function checkIfOwner(userID: string, orgID: string): Promise<Status>{
+    //step 1: make status to track ourselve
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null
+    }
+
+    try {
+        const org = await prisma.organization.findFirst({
+            where: {
+                id: orgID,
+                ownerId: userID
+            }
+        });
+        if (!org) {
+            status.success = false;
+            status.code = 403;
+            status.message = `forbidden exception in checkIfOwner. either org doesn't exist or user isn't the owner`;
+        }
+    }
+    catch (e: any) {
+        status.success = false;
+        status.code = 500;
+        status.message = "checkIfOwner failed. Internal Server Error";
+    }
+    return status
+}
