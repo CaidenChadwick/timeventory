@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "bootstrap/dist/css/bootstrap.css";
 
 :root {
   --background: #112C81;
@@ -20,7 +21,7 @@ p.orange {
 }
 
 
-a{
+a {
   margin: 20px;
 }
 
@@ -46,4 +47,8 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.collapse {
+  visibility: visible;
 }
