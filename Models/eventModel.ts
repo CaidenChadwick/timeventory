@@ -58,7 +58,7 @@ export async function createEventWithOrgID(orgID: string, session: string, event
 
     return status;
 }
-
+/*
 export async function getAllEventsOfOrg(orgID: string): Promise<Status>{
     //step 1: make status to track ourselve
     const status: Status = {
@@ -74,6 +74,9 @@ export async function getAllEventsOfOrg(orgID: string): Promise<Status>{
                 organizationId: orgID
             }
         })
+        if (events) {
+            
+        }
     }
     catch (e: any) {
         status.success = false;
