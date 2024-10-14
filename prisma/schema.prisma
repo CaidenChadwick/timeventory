@@ -37,6 +37,7 @@ model Organization {
 
 model Event {
   id             String   @id @default(cuid())
+  eventName      String   @unique
   organizationId String //could make this its own model but events can olny have one host so... keep it like this
   timeOfEvent    DateTime
   placeOfEvent   String
