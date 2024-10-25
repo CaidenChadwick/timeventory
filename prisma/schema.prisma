@@ -14,14 +14,44 @@ datasource db {
 }
 
 model Session {
-  sessionToken String @id @default(cuid())
-  userId String
-  expiration DateTime
+  sessionToken String   @id @default(cuid())
+  userId       String
+  expiration   DateTime
 }
 
 model User {
-  id String @id @default(cuid())
-  email String @unique
-  username String @unique
+  id           String      @id @default(cuid())
+  email        String      @unique
+  username     String      @unique
   passwordHash String
+  following    Following[]
+}
+
+model Organization {
+  id               String      @id @default(cuid())
+  ownerId          String //a user Id; might make it its own model
+  organizationName String      @unique
+  description      String?
+  followers        Following[]
+}
+
+model Event {
+  id             String   @id @default(cuid())
+  organizationId String //could make this its own model but events can olny have one host so... keep it like this
+  timeOfEvent    DateTime
+  placeOfEvent   String
+  description    String
+}
+
+// user follows an org
+// need own data base for many users and follow many databases
+model Following {
+  user          User         @relation(fields: [userID], references: [id])
+  userID        String
+  org           Organization @relation(fields: [orgID], references: [id])
+  orgID         String
+  receiveEmails Boolean      @default(true) // org can talk to you
+  receiveAlerts Boolean      @default(true) // will be aleted of event creation
+
+  @@id([userID, orgID])
 }
