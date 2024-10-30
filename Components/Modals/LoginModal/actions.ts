@@ -9,6 +9,9 @@ export async function loginAction(loginData: LoginData): Promise<boolean> {
 
     const status = await login(loginData);
 
+    console.log(status.message);
+    console.log(status.code);
+    console.log(status.success);
     if (!status.success) {
         return false;
     }

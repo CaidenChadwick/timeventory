@@ -8,6 +8,11 @@ import { LoginData } from '@/types/formInputTypes';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
+// added by eric
+interface LoginFormProps {
+    handleCloseModal: () => void;
+}
+
 export default function LoginForm() {
 
     const [usernameState, setUsernameState] = useState<string>('');
@@ -15,19 +20,18 @@ export default function LoginForm() {
     const [error, setError] = useState(false);
 
     // Handle the form submission
-    const handleSumbit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         
         const loginData: LoginData = {
             username: usernameState,
             password: passwordState
         };
-
         setError(!(await loginAction(loginData)));
-    }
+    };
 
     return (
-        <Form noValidate validated={false} onSubmit={handleSumbit}>
+        <Form noValidate validated={false} onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
                 <Form.Label><b>Username</b></Form.Label>
                 <Form.Control 

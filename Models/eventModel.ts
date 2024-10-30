@@ -48,6 +48,7 @@ export async function createEventWithOrgID(orgID: string, session: string, event
                 status.code = 409;
                 status.message = `createEventWithOrgName failed! Event name "${eventName}" already taken!`;
             }
+            /////
             else {
                 status.success = false;
                 status.code = 500;

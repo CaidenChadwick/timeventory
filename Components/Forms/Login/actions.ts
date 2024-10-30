@@ -19,6 +19,5 @@ export async function loginAction(loginData: LoginData): Promise<boolean> {
     const cookieObj = cookies();
     cookieObj.set('sessionToken', sessionToken);
 
-    // Redirect to profile page
     redirect('/profile');
 }

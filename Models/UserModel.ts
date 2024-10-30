@@ -205,3 +205,52 @@ async function getUserId(username: string): Promise<string | null> {
     // Otherwise, return hash
     return user.id;
 }
+
+// eric
+export async function getUsername(userID: string): Promise<string | null> {
+    const user = await prisma.user.findUnique({
+        where: {
+            id: userID
+        }
+    })
+
+    if(user) {
+        return user.username;
+    }
+    else {
+        return null;
+    }
+}
+
+// gets user's data for the user page. Don't give them the password
+// Eric
+export async function getUserData(username: string): Promise<Status> {
+    const status:Status = {
+        success: true,
+        code: 200,
+        message: "Got user information",
+        payload: null
+    };
+
+    try {
+        const tempUser = await prisma.user.findUnique({
+            where: {
+                username: username
+            }
+        });
+        if (tempUser) {
+            const userData = [username, tempUser?.email, tempUser?.id];
+            status.payload = userData
+        }
+        else {
+            status.success = false
+            status.code = 404
+        }
+    }
+    catch (e: any) {
+        status.success = false;
+        status.code = 500;
+        status.message = "Internal Sever Error";
+    }
+    return status;
+}

@@ -40,6 +40,11 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
         <Navbar.Brand href="/">
           Logo
         </Navbar.Brand>
+        {loggedIn &&
+        <Navbar.Brand href = "/user">
+          User
+        </Navbar.Brand>}
+
       </Container>
       <LoginModal
         showLoginModal={showLoginModal}

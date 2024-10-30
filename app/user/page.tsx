@@ -1,28 +1,17 @@
+import { redirect } from 'next/navigation';
+import { getUserNameFromSession } from './action';
 import React from 'react';
 
-const user = 'eric';
+export default async function RedirectToProfile() {
+  const userName = await getUserNameFromSession();
 
-let messesage = "you are not logged in bugger!";
-if (user) {
-  messesage = "you are logged in! horrary!"
+  if (userName) {
+      // Redirect to the user's profile page if logged in
+      redirect(`/user/${userName}`);
+  } else {
+      // Redirect to a 404 page if not logged in
+      redirect('/404');
+  }
+
+  return null; // No content needs to be rendered due to redirection
 }
-
-const UserPage: React.FC = () => {
-  return (
-    <div>
-      <h1>Timeventory</h1>
-      <p>Welcome to the</p>
-      <p className = 'orange'>USER PAGE</p>
-      {
-        user?(
-          <p>welcome {user}!</p>
-        ):(
-          <p>welcome nobody!</p>
-        )
-      }
-      <p className = 'orange'>{messesage}</p>
-    </div>
-  );
-};
-
-export default UserPage;

@@ -27,6 +27,8 @@ export default function LoginModal({ showLoginModal, toggleLoginModal }: { showL
         }
     }
 
+    const handleClose = () => setError(false);
+
     return (
         <Modal show={showLoginModal} onHide={toggleLoginModal} animation={false}>
             <Modal.Header closeButton>
