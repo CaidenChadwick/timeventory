@@ -38,7 +38,12 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
     <Navbar collapseOnSelect expand="lg" bg="dark" data-bs-theme="dark">
       <Container>
         <Navbar.Brand href="/">
-          Logo
+          <Image 
+            src="/favicon.ico"
+            alt="Logo"
+            width={128}
+            height={128}
+          />
         </Navbar.Brand>
         {loggedIn &&
         <Navbar.Brand href = "/user">

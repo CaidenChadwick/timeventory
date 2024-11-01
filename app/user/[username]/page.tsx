@@ -1,5 +1,7 @@
 import { checkToSeeIfThisUserMatchesProfile, getUserInfo } from '../action'
 
+// TODO: show all orgs he is apart of
+// Eric
 export default async function UrlInformation({
     params,
 }: {
@@ -20,7 +22,7 @@ export default async function UrlInformation({
                 )}
 
                 {isUserLoggedIn ? (
-                    <a href={`/createOrg/${params.username}`}>Create Org</a>
+                    <a href={`/createOrg`}>Create Org</a>
                 ) : (
                     <p>User is not logged in</p>
                 )}

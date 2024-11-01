@@ -1,16 +1,22 @@
+"use client"
+
 import React from 'react';
+import OrganizationForm from '@/Components/htmlParts/orgazationStuff/OrganizationForm';
+import { saveOrganization } from './action';
+import { useRouter } from 'next/navigation';
 
-const testName = "brugerTank"
+export default function NewOrganizationPage() {
+    const router = useRouter();
 
-const HomePage: React.FC = () => {
-  return (
-    <div>
-      <h1>Timeventory</h1>
-      <p>Welcome to the</p>
-      <p className = 'orange'>ORG PAGE</p>
-      <button>createOrg</button>
-    </div>
-  );
-};
+    const handleFormSubmit = async (formData: { name: string; description: string; email: string }) => {
+        const success = await saveOrganization(formData);
+        
+        if (success) {
+            router.push('/organizations');
+        } else {
+            alert("Failed to create organization. Please try again.");
+        }
+    };
 
-export default HomePage;
+    return <OrganizationForm onSubmit={handleFormSubmit} />;
+}

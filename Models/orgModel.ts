@@ -8,7 +8,7 @@ import { Status } from '@/types/databaseUtilityTypes';
 // requires a user to be owner
 // requires a unique name
 // the user must be logged in
-export async function createOrg(name: string, session: string): Promise<Status>{
+export async function createOrg(session:string, name: string, email: string, description:string = ""): Promise<Status>{
     //step 1: make status to track ourselve
     const status: Status = {
         success: true,
@@ -26,7 +26,8 @@ export async function createOrg(name: string, session: string): Promise<Status>{
             const org = await prisma.organization.create({
                 data: {
                     ownerId: userID,
-                    organizationName: name
+                    organizationName: name,
+                    description: description
                 }
             })
             status.payload = org.id;
