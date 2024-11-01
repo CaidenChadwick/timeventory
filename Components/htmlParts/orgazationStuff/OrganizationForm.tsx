@@ -16,7 +16,7 @@ export default function OrganizationForm({ onSubmit }: OrganizationFormProps) {
         if (!name || !email) {
             alert("Name and email are required.");
             return;
-        }
+        } 
         onSubmit({ name, description, email });
     };
 

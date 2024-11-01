@@ -42,7 +42,7 @@ export async function createOrg(session:string, name: string, email: string, des
             else {
                 status.success = false;
                 status.code = 500;
-                status.message = "Internal Server Error";
+                status.message = "Internal Server Error: " + e;
             }
         }
     }

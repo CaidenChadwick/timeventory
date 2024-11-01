@@ -12,7 +12,7 @@ export default function NewOrganizationPage() {
         const success = await saveOrganization(formData);
         
         if (success) {
-            router.push('/organizations');
+            router.push('/organization');
         } else {
             alert("Failed to create organization. Please try again.");
         }
