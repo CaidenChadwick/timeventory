@@ -2,7 +2,6 @@
 import React from 'react';
 import { useState } from 'react';
 import { MouseEvent } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { logoutAction } from './actions';
 import LoginModal from '../Modals/LoginModal/LoginModal';
