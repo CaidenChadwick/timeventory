@@ -22,8 +22,6 @@ export default async function UrlInformation({
         const [username, email, id] = userInfo.payload;
         const orgsOwned = await getAllOrgsThatUserOwns(id);
         const isUserLoggedIn = await checkToSeeIfThisUserMatchesProfile(params.username);
-        console.log(orgsOwned.payload)
-        console.log(userInfo.payload)
         return (
             <div>
                 <h1>Name: {username}</h1>

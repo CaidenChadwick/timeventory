@@ -1,37 +1,24 @@
 // displays org and all events and presents option to follow
-
+import { getOrgInfo } from '../action'
 
 export default async function UrlInformation({
     params,
 }: {
-    params: { username: string };
+    params: { organization: string };
 }) {
-    const userInfo = await getUserInfo(params.username);
-
-    if (userInfo.success) {
-        const isUserLoggedIn = await checkToSeeIfThisUserMatchesProfile(params.username);
-
+    const orgInfo = await getOrgInfo(params.organization);
+    console.log(orgInfo.success)
+    console.log(orgInfo.message)
+    console.log(orgInfo.code)
+    if (orgInfo.success) {
         return (
             <div>
-                <h1>Name: {userInfo.payload[0]}</h1>
-                {userInfo.payload[1] != null ? (
-                    <h2>Email: {userInfo.payload[1]}</h2>
-                ) : (
-                    <h2>No Email</h2>
-                )}
-
-                {isUserLoggedIn ? (
-                    <a href={`/createOrg`}>Create Org</a>
-                ) : (
-                    <p>User is not logged in</p>
-                )}
+                <p>{orgInfo.payload[0]}</p>
+                <p>{orgInfo.payload[1]}</p>
+                <p>{orgInfo.payload[2]}</p>
+                <p>{orgInfo.payload[3]}</p>
             </div>
-        );
-    } else {
-        return (
-            <div>
-                <h1>404, user does not exist!</h1>
-            </div>
-        );
+        )
     }
+    return null
 }
