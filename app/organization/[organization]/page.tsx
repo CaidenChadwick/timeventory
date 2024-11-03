@@ -7,16 +7,11 @@ export default async function UrlInformation({
     params: { organization: string };
 }) {
     const orgInfo = await getOrgInfo(params.organization);
-    console.log(orgInfo.success)
-    console.log(orgInfo.message)
-    console.log(orgInfo.code)
     if (orgInfo.success) {
         return (
             <div>
-                <p>{orgInfo.payload[0]}</p>
-                <p>{orgInfo.payload[1]}</p>
-                <p>{orgInfo.payload[2]}</p>
-                <p>{orgInfo.payload[3]}</p>
+                <p>{orgInfo.payload["organizationName"]}</p>
+                <p>{orgInfo.payload["description"]}</p>
             </div>
         )
     }
