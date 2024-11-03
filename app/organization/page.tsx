@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import React from 'react';
 
@@ -7,7 +7,7 @@ const HomePage: React.FC = () => {
     <div>
       <h1>Timevessssssssssssssssssssssry</h1>
       <p>Welcome to the</p>
-      <p className = 'orange'>HOME PAGE</p>
+      <p className = 'orange'>search page. pls complete me</p>
     </div>
   );
 };

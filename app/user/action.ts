@@ -2,6 +2,7 @@
 // eric
 import { isLoggedIn, getUserId } from '@/Models/SessionModel'
 import { getUserData, getUsername } from '@/Models/UserModel'
+import { getOrgsUserFollows } from '@/Models/orgModel'
 import { getSessionToken } from '@/utils/cookieManager';
 import { Status } from '@/types/databaseUtilityTypes';
 
@@ -25,4 +26,9 @@ export async function getUserNameFromSession():Promise<string | null>{
         }
     }
     return null;
+}
+
+export async function getAllOrgsThatUserOwns(userId:string): Promise<Status> {
+    console.log("AHHHHHH" + userId)
+    return getOrgsUserFollows(userId);
 }

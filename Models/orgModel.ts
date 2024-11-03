@@ -30,6 +30,7 @@ export async function createOrg(session:string, name: string, email: string, des
                     description: description
                 }
             })
+            console.log(org)
             status.payload = org.id;
         }
         catch(e: any) {
@@ -168,4 +169,35 @@ export async function checkIfOwner(userID: string, orgID: string): Promise<Statu
         status.message = "checkIfOwner failed. Internal Server Error";
     }
     return status
+}
+
+export async function getOrgsUserFollows(userId: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null
+    };
+
+    try {
+        // Attempt to get all organizations owned by the user
+        const userOrganizations = await prisma.organization.findMany({
+            where: {
+                ownerId: userId
+            }
+        });
+
+        // Update payload with the fetched organizations
+        console.log(userOrganizations)
+        console.log(userId)
+        status.payload = userOrganizations;
+    } catch (error) {
+        // Handle any errors that occur during the query
+        status.success = false;
+        status.code = 500;
+        status.message = "Error retrieving organizations";
+        console.error(error); // Optional: log the error for debugging
+    }
+
+    return status;
 }

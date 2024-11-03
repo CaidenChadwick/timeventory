@@ -1,7 +1,16 @@
-import { checkToSeeIfThisUserMatchesProfile, getUserInfo } from '../action'
+import { checkToSeeIfThisUserMatchesProfile, getUserInfo, getAllOrgsThatUserOwns } from '../action'
+interface Organization {
+    id: string;
+    organizationName: string;
+}
 
-// TODO: show all orgs he is apart of
-// Eric
+interface Status {
+    success: boolean;
+    code: number;
+    message: string;
+    payload: any[] | null; // Adjust as per actual payload structure
+}
+
 export default async function UrlInformation({
     params,
 }: {
@@ -9,23 +18,30 @@ export default async function UrlInformation({
 }) {
     const userInfo = await getUserInfo(params.username);
 
-    if (userInfo.success) {
+    if (userInfo.success && userInfo.payload) {
+        const [username, email, id] = userInfo.payload;
+        const orgsOwned = await getAllOrgsThatUserOwns(id);
         const isUserLoggedIn = await checkToSeeIfThisUserMatchesProfile(params.username);
-
+        console.log(orgsOwned.payload)
+        console.log(userInfo.payload)
         return (
             <div>
-                <h1>Name: {userInfo.payload[0]}</h1>
-                {userInfo.payload[1] != null ? (
-                    <h2>Email: {userInfo.payload[1]}</h2>
-                ) : (
-                    <h2>No Email</h2>
-                )}
+                <h1>Name: {username}</h1>
+                {email ? <h2>Email: {email}</h2> : <h2>No Email</h2>}
 
                 {isUserLoggedIn ? (
                     <a href={`/createOrg`}>Create Org</a>
                 ) : (
                     <p>User is not logged in</p>
                 )}
+                
+                {orgsOwned.success && orgsOwned.payload ? (
+                    <div>
+                        {orgsOwned.payload.map((org: Organization) => (
+                            <a key={org.id} href = {`/organization/${org.organizationName}`}>{org.organizationName}</a>
+                        ))}
+                    </div>
+                ) : null}
             </div>
         );
     } else {
