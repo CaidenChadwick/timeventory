@@ -3,7 +3,7 @@
 import prisma from '@/db';
 import { Status } from '@/types/databaseUtilityTypes';
 import {getUserId} from '@/Models/SessionModel';
-import {checkIfOwner} from '@/Models/orgModel';
+import {checkIfOwner, getOrgIdByName } from '@/Models/orgModel';
 
 // also requires userID
 export async function createEventWithOrgID(orgID: string, session: string, eventName: string, timeOfEvent: Date, placeOfEvent: string, description: string): Promise<Status> {
@@ -59,49 +59,26 @@ export async function createEventWithOrgID(orgID: string, session: string, event
 
     return status;
 }
-/*
-export async function getAllEventsOfOrg(orgID: string): Promise<Status>{
+
+export async function createEventWithOrgName(orgName: string, session: string, eventName: string, timeOfEvent: Date, placeOfEvent: string, description: string): Promise<Status> {
     //step 1: make status to track ourselve
-    const status: Status = {
+    let status: Status = {
         success: true,
         code: 200,
         message: "OK",
         payload: null
     }
 
-    try {
-        const events = await prisma.event.findMany({
-            where: {
-                organizationId: orgID
-            }
-        })
-        if (events) {
-            
-        }
-    }
-    catch (e: any) {
-        status.success = false;
-        status.code = 500;
-        status.message = "error in getAllEventsOfOrg. Internal server error";
-    }
-    return status
-}
-/*
-export async function createEventWithOrgName(orgName: string, timeOfEvent: Date, placeOfEvent: string, description: string): Promise<Status> {
-    //step 1: make status to track ourselve
-    const status: Status = {
-        success: true,
-        code: 200,
-        message: "OK",
-        payload: null
+    const orgId = await getOrgIdByName(orgName)
+    if (!orgId) {
+        status.success = false
+        status.code = 500
+        status.message = "Server Error With getOrgIdByName in createEventWithOrgName"
+        return status
     }
 
     try {
-        const event = await prisma.organization.create({
-            data: {
-
-            }
-        })
+        status = await createEventWithOrgID(orgId.payload, session, eventName, timeOfEvent, placeOfEvent, description)
     }
     catch (e: any) {
         status.success = false;
@@ -111,4 +88,3 @@ export async function createEventWithOrgName(orgName: string, timeOfEvent: Date,
 
     return status;
 }
-    */
