@@ -85,18 +85,6 @@ export async function getOrgNameById(orgID: string): Promise<Status>{
 }
 
 
-// TODO: Event stuff not done, come back later
-export async function getOrgEvents(): Promise<Status>{
-    //step 1: make status to track ourselve
-    const status: Status = {
-        success: true,
-        code: 200,
-        message: "OK",
-        payload: null
-    }
-    return status
-}
-
 export async function getOrgIdByName(orgName: string): Promise<Status>{
     //step 1: make status to track ourselve
     const status: Status = {
@@ -114,7 +102,7 @@ export async function getOrgIdByName(orgName: string): Promise<Status>{
         });
 
         if (org) {
-            status.payload = org.id;
+            status.payload = [org.id];
         }
         else {
             status.success = false;

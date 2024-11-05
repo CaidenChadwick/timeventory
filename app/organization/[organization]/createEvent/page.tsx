@@ -2,26 +2,24 @@
 
 import React from 'react';
 import EventForm from '@/Components/htmlParts/eventStuff/EventForm';
-import { saveEvent } from '../../action';
+import { saveEvent, getOrgInfo } from '../../action';
 import { useRouter } from 'next/navigation';
-import { useParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export default function NewEventPage() {
     const router = useRouter();
-    const { orgname } = useParams();
-
-    const 
+    const orgName = usePathname().split('/')[2];
 
     const handleFormSubmit = async (formData: { 
         eventName: string; 
-        timeOfEvent: string; 
+        timeOfEvent: Date; 
         placeOfEvent: string; 
         description: string;  
     }) => {
-        const success = await saveEvent(orgname, formData);
-        
+        const orgInfo = await getOrgInfo(orgName);
+        const success = await saveEvent(orgInfo.payload["id"], formData);
         if (success) {
-            router.push('/organization');
+            router.push("./");
         } else {
             alert("Failed to create event. Please try again.");
         }

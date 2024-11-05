@@ -5,8 +5,7 @@ import React, { useState } from 'react';
 interface EventFormProps {
     onSubmit: (formData: { 
         eventName: string; 
-        eventId: string; 
-        timeOfEvent: string; 
+        timeOfEvent: Date; 
         placeOfEvent: string; 
         description: string; 
     }) => void;
@@ -14,18 +13,26 @@ interface EventFormProps {
 
 export default function EventForm({ onSubmit }: EventFormProps) {
     const [eventName, setEventName] = useState('');
-    const [eventId, setEventId] = useState('');
     const [timeOfEvent, setTimeOfEvent] = useState('');
     const [placeOfEvent, setPlaceOfEvent] = useState('');
     const [description, setDescription] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!eventName || !eventId || !timeOfEvent || !placeOfEvent) {
+        if (!eventName || !timeOfEvent || !placeOfEvent) {
             alert("All fields except description are required.");
             return;
         }
-        onSubmit({ eventName, eventId, timeOfEvent, placeOfEvent, description });
+        
+        // Convert `timeOfEvent` to a Date object
+        const timeOfEventDate = new Date(timeOfEvent);
+
+        onSubmit({
+            eventName,
+            timeOfEvent: timeOfEventDate,
+            placeOfEvent,
+            description,
+        });
     };
 
     return (
@@ -37,16 +44,6 @@ export default function EventForm({ onSubmit }: EventFormProps) {
                     id="eventName"
                     value={eventName}
                     onChange={(e) => setEventName(e.target.value)}
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="eventId">Event ID (required):</label>
-                <input
-                    type="text"
-                    id="eventId"
-                    value={eventId}
-                    onChange={(e) => setEventId(e.target.value)}
                     required
                 />
             </div>

@@ -88,3 +88,36 @@ export async function createEventWithOrgName(orgName: string, session: string, e
 
     return status;
 }
+
+export async function getOrgEvents(orgID:string): Promise<Status>{
+    //step 1: make status to track ourselve
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null
+    }
+
+    try {
+        const event = await prisma.event.findMany({
+            where: {
+                organizationId: orgID
+            }
+        });
+
+        if (event) {
+            status.payload = event;
+        }
+        else {
+            status.success = false;
+            status.code = 404;
+            status.message = "getOrgEvents failed. Couldn't find org";
+        }
+    }
+    catch (e: any){
+        status.success = false;
+        status.code = 500;
+        status.message = "getOrgEvents failed. Internal Server Error";
+    }
+    return status
+}
