@@ -121,3 +121,63 @@ export async function getOrgEvents(orgID:string): Promise<Status>{
     }
     return status
 }
+
+export async function getEventData(eventID: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null
+    }
+    try {
+        const event = await prisma.event.findUnique({
+            where: {
+                id: eventID
+            }
+        });
+        if (event) {
+            status.payload = event
+        }
+        else {
+            status.code = 404
+            status.message = "Event Not Found"
+            status.success = false
+        }
+    }
+    catch (e: any) {
+        status.code = 500
+        status.message = e
+        status.success = false
+    }
+    return status
+}
+
+export async function getEventID(eventName: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null
+    }
+    try {
+        const event = await prisma.event.findUnique({
+            where: {
+                eventName: eventName
+            }
+        });
+        if (event) {
+            status.payload = event["id"]
+        }
+        else {
+            status.code = 404
+            status.message = "Event Not Found"
+            status.success = false
+        }
+    }
+    catch (e: any) {
+        status.code = 500
+        status.message = e
+        status.success = false
+    }
+    return status
+}

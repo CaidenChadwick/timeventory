@@ -1,7 +1,7 @@
 import { Status } from '@/types/databaseUtilityTypes'
 import { getOrgInfoByName } from '@/Models/orgModel'
 import { getSessionToken } from "@/utils/cookieManager";
-import { createEventWithOrgID, getOrgEvents } from '@/Models/eventModel'
+import { createEventWithOrgID, getOrgEvents, getEventData, getEventID } from '@/Models/eventModel'
 
 export async function getOrgInfo(orgName:string): Promise<Status> {
     const status = await getOrgInfoByName(orgName)
@@ -27,4 +27,16 @@ export async function saveEvent(orgId: string, formData: {
 
 export async function findEventsOfOrg(ordID: string): Promise<Status> {
     return await getOrgEvents(ordID)
+}
+
+export async function getEventDataWithName(eventName: string): Promise<Status> {
+    console.log("2" + eventName)
+    const eventID = await getEventID(eventName)
+    console.log("3" + eventID.payload)
+    if (!eventID.success) {
+        return eventID
+    }
+    else {
+        return await getEventData(eventID.payload)
+    }
 }
