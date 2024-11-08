@@ -1,37 +1,34 @@
 // displays org and all events and presents option to follow
+import { getOrgInfo, findEventsOfOrg } from '../action'
 
+interface EventData {
+    id: string;
+    eventName: string;
+}
 
 export default async function UrlInformation({
     params,
 }: {
-    params: { username: string };
+    params: { organization: string };
 }) {
-    const userInfo = await getUserInfo(params.username);
-
-    if (userInfo.success) {
-        const isUserLoggedIn = await checkToSeeIfThisUserMatchesProfile(params.username);
-
+    const orgInfo = await getOrgInfo(params.organization);
+    const orgEvents = await findEventsOfOrg(orgInfo.payload["id"]);
+    console.log(orgEvents.payload)
+    if (orgInfo.success) {
         return (
             <div>
-                <h1>Name: {userInfo.payload[0]}</h1>
-                {userInfo.payload[1] != null ? (
-                    <h2>Email: {userInfo.payload[1]}</h2>
-                ) : (
-                    <h2>No Email</h2>
-                )}
-
-                {isUserLoggedIn ? (
-                    <a href={`/createOrg`}>Create Org</a>
-                ) : (
-                    <p>User is not logged in</p>
-                )}
+                <p>{orgInfo.payload["organizationName"]}</p>
+                <p>{orgInfo.payload["description"]}</p>
+                {orgEvents.success && orgEvents.payload ? (
+                    <div>
+                        {orgEvents.payload.map((event: EventData) => (
+                            <a key={event.id} href={`./${params.organization}/events/${event.eventName}`}>{event.eventName}</a>
+                        ))}
+                    </div>
+                ) : null}
+                <a href={`/organization/${params.organization}/createEvent`}>Create Event</a>
             </div>
-        );
-    } else {
-        return (
-            <div>
-                <h1>404, user does not exist!</h1>
-            </div>
-        );
+        )
     }
+    return null
 }

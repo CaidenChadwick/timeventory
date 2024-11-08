@@ -84,30 +84,8 @@ export async function getOrgNameById(orgID: string): Promise<Status>{
     return status
 }
 
-export async function getOrgID(): Promise<Status>{
-    //step 1: make status to track ourselve
-    const status: Status = {
-        success: true,
-        code: 200,
-        message: "OK",
-        payload: null
-    }
-    return status
-}
 
-// TODO: Event stuff not done, come back later
-export async function getOrgEvents(): Promise<Status>{
-    //step 1: make status to track ourselve
-    const status: Status = {
-        success: true,
-        code: 200,
-        message: "OK",
-        payload: null
-    }
-    return status
-}
-
-export async function getOrgOwnerIdByName(orgName: string): Promise<Status>{
+export async function getOrgIdByName(orgName: string): Promise<Status>{
     //step 1: make status to track ourselve
     const status: Status = {
         success: true,
@@ -124,7 +102,7 @@ export async function getOrgOwnerIdByName(orgName: string): Promise<Status>{
         });
 
         if (org) {
-            status.payload = org.id;
+            status.payload = [org.id];
         }
         else {
             status.success = false;
@@ -180,23 +158,46 @@ export async function getOrgsUserFollows(userId: string): Promise<Status> {
     };
 
     try {
-        // Attempt to get all organizations owned by the user
         const userOrganizations = await prisma.organization.findMany({
             where: {
                 ownerId: userId
             }
         });
-
-        // Update payload with the fetched organizations
-        console.log(userOrganizations)
-        console.log(userId)
         status.payload = userOrganizations;
     } catch (error) {
-        // Handle any errors that occur during the query
         status.success = false;
         status.code = 500;
         status.message = "Error retrieving organizations";
-        console.error(error); // Optional: log the error for debugging
+    }
+
+    return status;
+}
+
+export async function getOrgInfoByName(orgName: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null
+    };
+    try {
+        const organization = await prisma.organization.findUnique({
+            where: {
+                organizationName: orgName
+            }
+        });
+
+        if (organization) {
+            status.payload = organization;
+        } else {
+            status.success = false;
+            status.code = 404;
+            status.message = "Organization not found";
+        }
+    } catch (error) {
+        status.success = false;
+        status.code = 500;
+        status.message = "An error occurred while retrieving organization information" + error;
     }
 
     return status;
