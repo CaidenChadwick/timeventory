@@ -12,10 +12,11 @@ import { getSessionToken } from '@/utils/cookieManager';
  * @param email - User's email
  * @param username - User's username
  * @param password - User's password
+ * @param receiveEmails - Whether user wants to receive emails
  * @returns Status object
 */
 
-export async function registerUser(email: string, username: string, password: string): Promise<Status> {
+export async function registerUser(email: string, username: string, password: string, receiveEmails: boolean): Promise<Status> {
 
     // Set up status object
     const status: Status = {
@@ -34,7 +35,8 @@ export async function registerUser(email: string, username: string, password: st
             data: {
                 email: email,
                 username: username,
-                passwordHash: hash
+                passwordHash: hash,
+                receiveEmails: receiveEmails
             }
         })
 
@@ -214,7 +216,7 @@ export async function getUsername(userID: string): Promise<string | null> {
         }
     })
 
-    if(user) {
+    if (user) {
         return user.username;
     }
     else {
@@ -225,7 +227,7 @@ export async function getUsername(userID: string): Promise<string | null> {
 // gets user's data for the user page. Don't give them the password
 // Eric
 export async function getUserData(username: string): Promise<Status> {
-    const status:Status = {
+    const status: Status = {
         success: true,
         code: 200,
         message: "Got user information",

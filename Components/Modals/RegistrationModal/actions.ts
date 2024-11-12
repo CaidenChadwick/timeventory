@@ -7,9 +7,9 @@ import { RegistrationData } from '@/types/databaseUtilityTypes';
 
 export async function registerUserAction(registrationData: RegistrationData): Promise<string> {
 
-    const { email, username, password } = registrationData;
+    const { email, username, password, receiveEmails } = registrationData;
 
-    const status = await registerUser(email, username, password);
+    const status = await registerUser(email, username, password, receiveEmails);
 
     if (!status.success) {
         switch (status.code) {

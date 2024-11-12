@@ -2,7 +2,7 @@
 
 'use client'
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
 import { registerUserAction } from './actions';
 import validate from '@/validation/client-validation';
 import { RegistrationData } from '@/types/formInputTypes';
@@ -21,6 +21,13 @@ export default function RegistrationForm() {
     const [usernameState, setUsernameState] = useInputValidation("");
     const [passwordState, setPasswordState] = useInputValidation("");
 
+    const [receiveEmailsState, setReceiveEmailsState] = useState(false);
+
+
+    const handleCheckboxChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        setReceiveEmailsState(event.target.checked);
+    };
+
     // Handle the form submission
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -36,7 +43,8 @@ export default function RegistrationForm() {
         const registrationData: RegistrationData = {
             email: emailState.value,
             username: usernameState.value,
-            password: passwordState.value
+            password: passwordState.value,
+            receiveEmails: receiveEmailsState
         };
 
         const message = await registerUserAction(registrationData);
@@ -90,6 +98,16 @@ export default function RegistrationForm() {
                         {errorMessage}
                     </Alert>
                 }
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label>Receive Emails?</Form.Label>
+                <Form.Check
+                    type="checkbox"
+                    className="custom-checkbox"
+                    label="Would you like to receive emails?"
+                    checked={receiveEmailsState}
+                    onChange={handleCheckboxChange}
+                />
             </Form.Group>
             <Button variant="primary" type="submit">Submit</Button>
         </Form>
