@@ -20,11 +20,12 @@ model Session {
 }
 
 model User {
-  id           String      @id @default(cuid())
-  email        String      @unique
-  username     String      @unique
-  passwordHash String
-  following    Following[]
+  id            String      @id @default(cuid())
+  email         String      @unique
+  username      String      @unique
+  passwordHash  String
+  following     Following[]
+  receiveEmails Boolean     @default(false)
 }
 
 model Organization {

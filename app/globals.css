@@ -52,3 +52,22 @@ body {
 .collapse {
   visibility: visible;
 }
+
+/* Checkbox Class */
+.custom-checkbox {
+  display: block;
+  text-align: left;
+  margin-left: 0;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  margin-right: 10px;
+  /* Adds space between the checkbox and the label text */
+}
+
+.custom-checkbox label {
+  display: inline-block;
+  /* Ensures the label stays next to the checkbox */
+  text-align: left;
+  color: black;
+}
