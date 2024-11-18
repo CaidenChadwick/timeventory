@@ -46,6 +46,7 @@ export default function RegistrationModal({ showRegisterModal, toggleRegisterMod
 
         const formData = new FormData();
         formData.append('email', emailState.value);
+        formData.append('username', usernameState.value);
 
         const message = await registerUserAction(registrationData);
         setErrorMessage(message);
@@ -64,8 +65,13 @@ export default function RegistrationModal({ showRegisterModal, toggleRegisterMod
                 }
         }
     }
+
+    const handleModalOpen = () => {
+        setReceiveEmailsState(false);
+    }
+
     return (
-        <Modal show={showRegisterModal} onHide={toggleRegisterModal} animation={false}>
+        <Modal show={showRegisterModal} onShow={handleModalOpen} onHide={toggleRegisterModal} animation={false}>
             <Modal.Header closeButton>
                 <Modal.Title>Register</Modal.Title>
             </Modal.Header>

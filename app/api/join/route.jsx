@@ -6,9 +6,9 @@ import nodemailer from 'nodemailer';
 // Handles POST requests to /api
 
 export async function POST(request) {
-    const username = process.env.NEXT_PUBLIC_EMAIL_USERNAME;
-    const password = process.env.NEXT_PUBLIC_EMAIL_PASSWORD;
-    const myEmail = process.env.NEXT_PUBLIC_PERSONAL_EMAIL;
+    const username = process.env.PUBLIC_EMAIL_USERNAME;
+    const password = process.env.PUBLIC_EMAIL_PASSWORD;
+    const myEmail = process.env.PUBLIC_PERSONAL_EMAIL;
 
 
     const formData = await request.formData()
@@ -30,13 +30,15 @@ export async function POST(request) {
     });
 
     try {
+        const user = formData.get('username');
+
+        const emailBody = await JoinEmail(user);
 
         const mail = await transporter.sendMail({
             from: username,
             to: to,
-            replyTo: myEmail,
             subject: `Welcome to Timeventory`,
-            html: JoinEmail,
+            html: emailBody,
         })
 
         return NextResponse.json({ message: "Success: email was sent" })
