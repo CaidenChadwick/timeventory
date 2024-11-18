@@ -1,6 +1,6 @@
 'use server'
 
-export const OrgEmail = () => {
+export const OrgEmail = async () => {
     return (
         '<p>HI</p>'
     )
