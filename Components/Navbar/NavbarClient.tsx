@@ -3,18 +3,26 @@ import React from 'react';
 import { useState } from 'react';
 import { MouseEvent } from 'react';
 import Image from 'next/image';
-import { logoutAction } from './actions';
-import LoginModal from '../Modals/LoginModal/LoginModal';
-import RegistrationModal from '../Modals/RegistrationModal/RegistrationModal';
+
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 
+import LoginModal from '../Modals/LoginModal/LoginModal';
+import RegistrationModal from '../Modals/RegistrationModal/RegistrationModal';
+import SidebarClient from '../Sidebar/SidebarClient';
 
-export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
+
+interface NavbarClientProps {
+  loggedIn: boolean;
+  user: string | null;
+}
+
+export default function NavbarClient({ loggedIn, user }: NavbarClientProps) {
 
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
   const [showRegisterModal, setShowRegisterModal] = useState<boolean>(false);
+  const [showSidebar, setShowSidebar] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const toggleLoginModal = () => {
@@ -25,19 +33,11 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
     setShowRegisterModal(!showRegisterModal);
   }
 
-  // Handle Logout click
-  const handleLogOut = async (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    const message = await logoutAction();
-    setErrorMessage(message);
-
-  }
-
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" data-bs-theme="dark">
       <Container>
         <Navbar.Brand href="/">
-          <Image 
+          <Image
             src="/favicon.ico"
             alt="Logo"
             width={128}
@@ -45,9 +45,9 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
           />
         </Navbar.Brand>
         {loggedIn &&
-        <Navbar.Brand href = "/user">
-          User
-        </Navbar.Brand>}
+          <Navbar.Brand href="/user">
+            User
+          </Navbar.Brand>}
 
       </Container>
       <LoginModal
@@ -69,10 +69,18 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
 
         {loggedIn &&
           <Nav>
-            <Nav.Link onClick={handleLogOut}>Log Out</Nav.Link>
+            <Nav.Link
+              onClick={() => setShowSidebar(true)} // Toggle the sidebar on click
+              style={{ cursor: 'pointer', color: 'white' }}
+            >
+              Open Sidebar
+            </Nav.Link>
           </Nav>
         }
       </Navbar.Collapse>
+      {loggedIn &&
+        <SidebarClient user={user} showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
+      }
     </Navbar>
   )
 };

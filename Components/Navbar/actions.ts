@@ -1,25 +1,19 @@
 'use server'
 
-import { logOutUser } from "@/Models/UserModel"
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { getUserId } from "@/Models/SessionModel";
+import { getUsername } from "@/Models/UserModel"
+import { getSessionToken } from "@/utils/cookieManager";
 
-export async function logoutAction() {
 
-    const status = await logOutUser();
+export async function getUsernameAction() {
 
-    if (!status.success) {
-        switch (status.code) {
-            case 440:
-                redirect("/");
-            default:
-                return "Unknown error occurred. Please try again later.";
-        }
-    }
+    const sessionToken = await getSessionToken();
+    if (!sessionToken)
+        return null;
+    const userID = await getUserId(sessionToken.toString());
+    if (!userID)
+        return null;
+    const user = await getUsername(userID);
 
-    // Delete Cookie
-    cookies().delete('sessionToken');
-
-    // Redirect to main page
-    redirect("/");
+    return user;
 }
