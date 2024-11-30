@@ -1,5 +1,5 @@
 // displays org and all events and presents option to follow
-import { getOrgInfo, findEventsOfOrg } from '../action'
+import { getOrgInfo, findEventsOfOrg, isUserOrgOwner } from '../action'
 
 interface EventData {
     id: string;
@@ -11,7 +11,11 @@ export default async function UrlInformation({
 }: {
     params: { organization: string };
 }) {
-    const orgInfo = await getOrgInfo(params.organization);
+    const orgInfo = await getOrgInfo(decodeURIComponent(params.organization));
+    if (!orgInfo.success) {
+        return <div>404 - Organization Not Found</div>;
+    }
+    const isOwner = await isUserOrgOwner(orgInfo.payload["id"])
     const orgEvents = await findEventsOfOrg(orgInfo.payload["id"]);
     console.log(orgEvents.payload)
     if (orgInfo.success) {
@@ -26,7 +30,10 @@ export default async function UrlInformation({
                         ))}
                     </div>
                 ) : null}
-                <a href={`/organization/${params.organization}/createEvent`}>Create Event</a>
+                {isOwner ? (
+                    <a href={`/organization/${params.organization}/createEvent`}>Create Event</a>
+                ): null}
+                
             </div>
         )
     }
