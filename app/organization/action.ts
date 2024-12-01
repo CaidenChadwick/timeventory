@@ -1,8 +1,11 @@
+"use server"
+
 import { Status } from '@/types/databaseUtilityTypes'
 import { getOrgInfoByName, checkIfOwner } from '@/Models/orgModel'
 import { getSessionToken } from "@/utils/cookieManager";
 import { getUserId } from "@/Models/SessionModel"
 import { createEventWithOrgID, getOrgEvents, getEventData, getEventID } from '@/Models/eventModel'
+import { isFollowing, followOrg, unfollowOrg } from '@/Models/followingModel'
 
 export async function getOrgInfo(orgName:string): Promise<Status> {
     const status = await getOrgInfoByName(orgName)
@@ -46,6 +49,54 @@ export async function isUserOrgOwner(orgID: string): Promise<boolean> {
         const user = await getUserId(token);
         if (user) {
             return (await checkIfOwner(user, orgID)).success;
+        }
+    }
+    return false;
+}
+
+// 0 = user isn't logged in; print no button
+// 1 = user is logged and isn't following in; show the follow button
+// 2 = user is logged and is following; show the unfollow button
+export async function isUserFollowingOrg(orgID: string): Promise<number> {
+    const token = await getSessionToken();
+    if (token) {
+        const user = await getUserId(token);
+        if (user) {
+            const temp = await isFollowing(user, orgID);
+            if (temp) {
+                return 2;
+            }
+            else {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+export async function unfollowOrganization(orgID: string): Promise<boolean> {
+    const token = await getSessionToken();
+    if (token) {
+        const user = await getUserId(token);
+        if (user) {
+            const status = await unfollowOrg(user, orgID);
+            if (status) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+export async function followOrganization(orgID: string): Promise<boolean> {
+    const token = await getSessionToken();
+    if (token) {
+        const user = await getUserId(token);
+        if (user) {
+            const status = await followOrg(user, orgID);
+            if (status) {
+                return true;
+            }
         }
     }
     return false;
