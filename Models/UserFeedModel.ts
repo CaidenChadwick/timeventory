@@ -1,0 +1,1 @@
+// use this page to hold database queries for organization and event info to be used in api routes for the users feed
