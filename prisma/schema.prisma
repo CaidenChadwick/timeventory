@@ -20,25 +20,25 @@ model Session {
 }
 
 model User {
-  id            String      @id @default(cuid())
-  email         String      @unique
-  username      String      @unique
-  passwordHash  String
-  following     Following[]
-  volunteering  Volunteers[]
-  volunteerRequest VolunteeringRequest[]
-  receiveEmails Boolean     @default(false)
+  id                String      @id @default(cuid())
+  email             String      @unique
+  username          String      @unique
+  passwordHash      String
+  following         Following[]
+  volunteering      Volunteers[]
+  volunteerRequest  VolunteeringRequest[]
+  receiveEmails     Boolean     @default(false)
 }
 
 model Organization {
-  id               String      @id @default(cuid())
-  ownerId          String //a user Id; might make it its own model
-  organizationName String      @unique
-  description      String?
-  followers        Following[]
-  volunteers       Volunteers[]
+  id                String      @id @default(cuid())
+  ownerId           String //a user Id; might make it its own model
+  organizationName  String      @unique
+  description       String?
+  followers         Following[]
+  volunteers        Volunteers[]
   volunteerRequests VolunteeringRequest[]
-  volunteerHours VolunteerLog[]
+  volunteerHours    VolunteerLog[]
 }
 
 model Event {
@@ -92,6 +92,7 @@ model VolunteerLog {
   volunteerOrgID  String
   startTime       DateTime
   endTime         DateTime?
+  messesage       String?
 
   @@index([volunteerUserID, volunteerOrgID]) // Optimizes queries on composite foreign key
 }
