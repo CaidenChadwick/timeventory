@@ -78,7 +78,7 @@ model VolunteeringRequest {
   userID        String
   org           Organization @relation(fields: [orgID], references: [id])
   orgID         String
-  messesage     String
+  message       String?
 
   @@id([userID, orgID])
 }

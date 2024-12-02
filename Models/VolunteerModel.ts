@@ -115,7 +115,7 @@ export async function createVolunteerRequest(
     }
     try {
         const request = await prisma.volunteeringRequest.create({
-            data: { userID: userId, orgID: orgId, messesage: message },
+            data: { userID: userId, orgID: orgId, message: message },
         });
         status.payload = request;
     } catch (error) {
@@ -215,5 +215,127 @@ export async function isUserVolunteer(userID: string, orgID: string): Promise<St
         status.message = "Error checking volunteer status.";
         console.error('Error checking volunteer status:', error);
     }
+    return status;
+}
+
+export async function getRequestOfOrg(userID: string, orgID: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null
+    };
+
+    try {
+        // Check if the user is the owner of the organization
+        const organization = await prisma.organization.findUnique({
+            where: { id: orgID },
+            select: { ownerId: true }
+        });
+
+        if (!organization) {
+            status.success = false;
+            status.message = "Organization not found.";
+            status.code = 404;
+            return status;
+        }
+
+        if (organization.ownerId !== userID) {
+            status.success = false;
+            status.message = "Unauthorized: User is not the owner of the organization.";
+            status.code = 403;
+            return status;
+        }
+
+        // Fetch all volunteer requests for the organization
+        const requests = await prisma.volunteeringRequest.findMany({
+            where: { orgID: orgID }
+        });
+
+        status.payload = requests;
+
+    } catch (error) {
+        console.error('Error fetching volunteer requests:', error);
+        status.success = false;
+        status.message = 'Failed to fetch volunteer requests.';
+        status.code = 500;
+    }
+
+    return status;
+}
+
+export async function acceptRequest(userID: string, orgID: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "Request accepted and user added as volunteer.",
+        payload: null
+    };
+
+    try {
+        // Create a volunteer entry
+        const volunteerStatus = await createVolunteer(userID, orgID);
+        if (!volunteerStatus.success) {
+            return {
+                success: false,
+                code: volunteerStatus.code,
+                message: "Failed to create volunteer.",
+                payload: volunteerStatus.payload,
+            };
+        }
+
+        // Delete the volunteer request
+        const requestStatus = await deleteVolunteerRequest(userID, orgID);
+        if (!requestStatus.success) {
+            return {
+                success: false,
+                code: requestStatus.code,
+                message: "Failed to delete volunteer request.",
+                payload: requestStatus.payload,
+            };
+        }
+
+        status.payload = {
+            volunteer: volunteerStatus.payload,
+            requestDeleted: requestStatus.payload,
+        };
+        
+    } catch (error) {
+        console.error('Error accepting volunteer request:', error);
+        status.success = false;
+        status.message = 'Failed to accept request.';
+        status.code = 500;
+    }
+
+    return status;
+}
+
+export async function declineRequest(userID: string, orgID: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "Request declined.",
+        payload: null
+    };
+
+    try {
+        // Delete the volunteer request
+        const requestStatus = await deleteVolunteerRequest(userID, orgID);
+        if (!requestStatus.success) {
+            return {
+                success: false,
+                code: requestStatus.code,
+                message: "Failed to delete volunteer request.",
+                payload: requestStatus.payload,
+            };
+        }
+
+    } catch (error) {
+        console.error('Error declining volunteer request:', error);
+        status.success = false;
+        status.message = 'Failed to decline request.';
+        status.code = 500;
+    }
+
     return status;
 }

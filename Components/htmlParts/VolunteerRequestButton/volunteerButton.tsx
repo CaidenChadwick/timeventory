@@ -1,16 +1,17 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Status } from '@/types/databaseUtilityTypes';
 
 export default function VolunteerButton({
     VolunteerButtonValue,
     orgID,
+    orgName,
     userID,
     createVolunteeringRequest,
 }: {
     VolunteerButtonValue: number;
     orgID: string;
+    orgName: string;
     userID: string;
     createVolunteeringRequest: (userID: string, orgID: string, message: string) => Promise<boolean>;
 }) {
@@ -36,7 +37,7 @@ export default function VolunteerButton({
             {state === 0 && (
                 <button
                     onClick={() => {
-                        window.location.href = `/organization/${orgID}/volunteer-tracker`;
+                        window.location.href = `/organization/${orgName}/request`;
                     }}
                 >
                     Manage Volunteer Tracker

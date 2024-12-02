@@ -164,95 +164,33 @@ export async function logOutUser(): Promise<Status> {
 
 }
 
-/**
- * Get the user hash via username
- * @param username - Given username
- * @returns User hash if username is valid, otherwise null
- */
-
-async function getUserHash(username: string): Promise<string | null> {
-
-    // Get the hash from the database
-    const user = await prisma.user.findUnique({
-        where: {
-            username: username
-        }
-    })
-
-    // If the user does not exist, return null
-    if (!user) return null;
-
-    // Otherwise, return hash
-    return user.passwordHash;
-}
-
-/**
- * Get user id via username
- * @param username - Given username
- * @returns User id if username is valid, otherwise null
- */
-
-async function getUserId(username: string): Promise<string | null> {
-
-    // Get the hash from the database
-    const user = await prisma.user.findUnique({
-        where: {
-            username: username
-        }
-    })
-
-    // If the user does not exist, return null
-    if (!user) return null;
-
-    // Otherwise, return hash
-    return user.id;
-}
-
 // eric
-export async function getUsername(userID: string): Promise<string | null> {
-    const user = await prisma.user.findUnique({
-        where: {
-            id: userID
-        }
-    })
-
-    if (user) {
-        return user.username;
-    }
-    else {
-        return null;
-    }
-}
-
-// gets user's data for the user page. Don't give them the password
-// Eric
-export async function getUserData(username: string): Promise<Status> {
+export async function getUsernameFromId(userID: string): Promise<Status> {
     const status: Status = {
         success: true,
         code: 200,
-        message: "Got user information",
+        message: "OK",
         payload: null
-    };
-
+    }
     try {
-        const tempUser = await prisma.user.findUnique({
-            where: {
-                username: username
-            }
+        const user = await prisma.user.findUnique({
+            where: { id: userID },
+            select: { username: true }, // Adjust the field name if necessary
         });
-        if (tempUser) {
-            const userData = [username, tempUser?.email, tempUser?.id];
-            status.payload = userData
+
+        if (!user) {
+            status.success = false;
+            status.message = "user not found";
+            status.code = 404;
+            return status;
         }
-        else {
-            status.success = false
-            status.code = 404
-        }
-    }
-    catch (e: any) {
+        status.payload = user.username;
+        return status;
+    } catch (error) {
+        console.error('Error fetching username:', error);
         status.success = false;
+        status.message = "internal server error";
         status.code = 500;
-        status.message = "Internal Sever Error";
+        return status;
     }
-    return status;
 }

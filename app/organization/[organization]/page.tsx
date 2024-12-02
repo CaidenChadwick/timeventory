@@ -54,10 +54,11 @@ export default async function UrlInformation({
                     />
                 )}
 
-                {!isOwner && (
+                {true && (
                     <VolunteerButton
                     VolunteerButtonValue={volunteerButtonValue}
                     orgID={orgInfo.payload["id"]}
+                    orgName={params.organization}
                     userID={userID}
                     createVolunteeringRequest={createVolunteeringRequest}
                 />

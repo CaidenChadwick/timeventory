@@ -6,7 +6,8 @@ import { getSessionToken } from "@/utils/cookieManager";
 import { getUserId } from "@/Models/SessionModel"
 import { createEventWithOrgID, getOrgEvents, getEventData, getEventID } from '@/Models/eventModel'
 import { isFollowing, followOrg, unfollowOrg } from '@/Models/followingModel'
-import { doesRequestExist, isUserVolunteer, createVolunteerRequest } from '@/Models/VolunteerModel'
+import { doesRequestExist, isUserVolunteer, createVolunteerRequest, getRequestOfOrg } from '@/Models/VolunteerModel'
+import { getUsernameFromId } from '@/Models/UserModel'
 
 export async function getOrgInfo(orgName:string): Promise<Status> {
     const status = await getOrgInfoByName(orgName)
@@ -111,5 +112,14 @@ export async function getTheUserId(): Promise<string> {
 }
 
 export async function createVolunteeringRequest(userID: string, orgID: string, message: string): Promise<boolean> {
+    console.log("AHHHHHHHHHHHHHHHHHHHHHHHHHH\n" + message);
     return (await createVolunteerRequest(userID, orgID, message)).success
+}
+
+export async function getAllRequest(userID: string, orgID: string): Promise<Status> {
+    return await getRequestOfOrg(userID, orgID);
+}
+
+export async function getUsername(userID: string): Promise<string> {
+    return (await getUsernameFromId(userID)).payload;
 }
