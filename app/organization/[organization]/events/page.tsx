@@ -1,5 +1,5 @@
 "use client"
-
+// should display all events
 import React from 'react';
 
 const HomePage: React.FC = () => {

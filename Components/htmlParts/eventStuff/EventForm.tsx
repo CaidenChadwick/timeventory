@@ -1,17 +1,19 @@
-"use client"
+"use client";
 
 import React, { useState } from 'react';
 
 interface EventFormProps {
-    onSubmit: (formData: { 
+    orgId: string; // Pass the orgId as a prop
+    orgName: string;
+    saveEvent: (orgId: string, formData: { 
         eventName: string; 
         timeOfEvent: Date; 
         placeOfEvent: string; 
         description: string; 
-    }) => void;
+    }) => Promise<boolean>; // Prop for saving the event
 }
 
-export default function EventForm({ onSubmit }: EventFormProps) {
+export default function EventForm({ orgId, orgName, saveEvent }: EventFormProps) {
     const [eventName, setEventName] = useState('');
     const [timeOfEvent, setTimeOfEvent] = useState('');
     const [placeOfEvent, setPlaceOfEvent] = useState('');
@@ -23,16 +25,23 @@ export default function EventForm({ onSubmit }: EventFormProps) {
             alert("All fields except description are required.");
             return;
         }
-        
+
         // Convert `timeOfEvent` to a Date object
         const timeOfEventDate = new Date(timeOfEvent);
 
-        onSubmit({
+        // Call the saveEvent function passed as a prop
+        const success = await saveEvent(orgId, {
             eventName,
             timeOfEvent: timeOfEventDate,
             placeOfEvent,
             description,
         });
+
+        if (success) {
+            window.location.href = `/organization/${orgName}`; // Redirect after successful creation
+        } else {
+            alert("Failed to create event. Please try again.");
+        }
     };
 
     return (

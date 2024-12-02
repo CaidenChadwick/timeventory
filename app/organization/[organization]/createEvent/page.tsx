@@ -1,29 +1,26 @@
-"use client"
+"use server";
 
 import React from 'react';
 import EventForm from '@/Components/htmlParts/eventStuff/EventForm';
-import { saveEvent, getOrgInfo } from '../../action';
-import { useRouter } from 'next/navigation';
-import { usePathname } from 'next/navigation';
+import { getOrgInfo, saveEvent, getTheUserId } from '../../action';
+import { redirect } from 'next/navigation'; // Import redirect function
 
-export default function NewEventPage() {
-    const router = useRouter();
-    const orgName = usePathname().split('/')[2];
+export default async function NewEventPage({
+    params,
+}: {
+    params: { organization: string };
+}) {
+    const orgInfo = await getOrgInfo(decodeURIComponent(params.organization));
 
-    const handleFormSubmit = async (formData: { 
-        eventName: string; 
-        timeOfEvent: Date; 
-        placeOfEvent: string; 
-        description: string;  
-    }) => {
-        const orgInfo = await getOrgInfo(orgName);
-        const success = await saveEvent(orgInfo.payload["id"], formData);
-        if (success) {
-            router.push("./");
-        } else {
-            alert("Failed to create event. Please try again.");
-        }
-    };
+    if (!orgInfo || !orgInfo.payload) {
+        return <div>404 - Organization Not Found</div>;
+    }
 
-    return <EventForm onSubmit={handleFormSubmit} />;
+    const user = await getTheUserId();
+    if (user !== orgInfo.payload["ownerId"]){
+        redirect(`/organization/${params.organization}`);
+    }
+    const orgId = orgInfo.payload["id"];
+    
+    return <EventForm orgId={orgId} orgName={params.organization} saveEvent={saveEvent} />;
 }
