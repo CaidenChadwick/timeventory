@@ -1,0 +1,1 @@
+// use this page as as api route to fetch database info for events
