@@ -25,6 +25,8 @@ model User {
   username      String      @unique
   passwordHash  String
   following     Following[]
+  volunteering  Volunteers[]
+  volunteerRequest VolunteeringRequest[]
   receiveEmails Boolean     @default(false)
 }
 
@@ -34,6 +36,9 @@ model Organization {
   organizationName String      @unique
   description      String?
   followers        Following[]
+  volunteers       Volunteers[]
+  volunteerRequests VolunteeringRequest[]
+  volunteerHours VolunteerLog[]
 }
 
 model Event {
@@ -56,4 +61,37 @@ model Following {
   receiveAlerts Boolean      @default(true) // will be aleted of event creation
 
   @@id([userID, orgID])
+}
+
+model Volunteers {
+  user          User         @relation(fields: [userID], references: [id])
+  userID        String
+  org           Organization @relation(fields: [orgID], references: [id])
+  orgID         String
+  hourLogs      VolunteerLog[]
+
+  @@id([userID, orgID]) // Composite primary key ensures user-org uniqueness
+}
+
+model VolunteeringRequest {
+  user          User         @relation(fields: [userID], references: [id])
+  userID        String
+  org           Organization @relation(fields: [orgID], references: [id])
+  orgID         String
+  messesage     String
+
+  @@id([userID, orgID])
+}
+
+model VolunteerLog {
+  id              String       @id @default(cuid())
+  org             Organization @relation(fields: [orgID], references: [id])
+  orgID           String
+  volunteer       Volunteers   @relation(fields: [volunteerUserID, volunteerOrgID], references: [userID, orgID])
+  volunteerUserID String
+  volunteerOrgID  String
+  startTime       DateTime
+  endTime         DateTime?
+
+  @@index([volunteerUserID, volunteerOrgID]) // Optimizes queries on composite foreign key
 }
