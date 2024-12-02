@@ -25,7 +25,7 @@ model User {
   username          String      @unique
   passwordHash      String
   following         Following[]
-  volunteering      Volunteers[]
+  volunteering      Volunteer[]
   volunteerRequest  VolunteeringRequest[]
   receiveEmails     Boolean     @default(false)
 }
@@ -36,7 +36,7 @@ model Organization {
   organizationName  String      @unique
   description       String?
   followers         Following[]
-  volunteers        Volunteers[]
+  volunteers        Volunteer[]
   volunteerRequests VolunteeringRequest[]
   volunteerHours    VolunteerLog[]
 }
@@ -63,7 +63,7 @@ model Following {
   @@id([userID, orgID])
 }
 
-model Volunteers {
+model Volunteer {
   user          User         @relation(fields: [userID], references: [id])
   userID        String
   org           Organization @relation(fields: [orgID], references: [id])
@@ -87,7 +87,7 @@ model VolunteerLog {
   id              String       @id @default(cuid())
   org             Organization @relation(fields: [orgID], references: [id])
   orgID           String
-  volunteer       Volunteers   @relation(fields: [volunteerUserID, volunteerOrgID], references: [userID, orgID])
+  volunteer       Volunteer   @relation(fields: [volunteerUserID, volunteerOrgID], references: [userID, orgID])
   volunteerUserID String
   volunteerOrgID  String
   startTime       DateTime
