@@ -1,5 +1,6 @@
-import { getOrgInfo, findEventsOfOrg, isUserOrgOwner, isUserFollowingOrg, unfollowOrganization, followOrganization } from '../action';
-import FollowButton from '@/Components/htmlParts/followButton/followButton'; // Import the client component
+import { getOrgInfo, findEventsOfOrg, isUserOrgOwner, isUserFollowingOrg, unfollowOrganization, followOrganization, getTheUserId, userVolunteerStatus, createVolunteeringRequest } from '../action';
+import FollowButton from '@/Components/htmlParts/followButton/followButton'; 
+import VolunteerButton from '@/Components/htmlParts/VolunteerRequestButton/volunteerButton'; 
 
 interface EventData {
     id: string;
@@ -16,9 +17,16 @@ export default async function UrlInformation({
         return <div>404 - Organization Not Found</div>;
     }
 
-    const isOwner = await isUserOrgOwner(orgInfo.payload["id"]);
+    const userID = await getTheUserId();
+    const isOwner = await isUserOrgOwner(userID, orgInfo.payload["id"]);
     const orgEvents = await findEventsOfOrg(orgInfo.payload["id"]);
-    const followButtonValue = await isUserFollowingOrg(orgInfo.payload["id"]);
+    var followButtonValue = 0
+    var volunteerButtonValue = 0
+    if (!isOwner) {
+        followButtonValue = await isUserFollowingOrg(userID, orgInfo.payload["id"]);
+        volunteerButtonValue = await userVolunteerStatus(userID, orgInfo.payload["id"]);
+    }
+    
 
     if (orgInfo.success) {
         return (
@@ -40,8 +48,18 @@ export default async function UrlInformation({
                     <FollowButton
                     followButtonValue={followButtonValue}
                     orgID={orgInfo.payload["id"]}
+                    userID={userID}
                     followOrg={followOrganization}
                     unfollowOrg={unfollowOrganization}
+                    />
+                )}
+
+                {!isOwner && (
+                    <VolunteerButton
+                    VolunteerButtonValue={volunteerButtonValue}
+                    orgID={orgInfo.payload["id"]}
+                    userID={userID}
+                    createVolunteeringRequest={createVolunteeringRequest}
                 />
                 )}
 

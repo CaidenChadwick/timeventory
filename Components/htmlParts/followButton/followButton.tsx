@@ -1,22 +1,24 @@
-'use client';
+'use client'
 
 import React, { useState } from 'react';
 
 export default function FollowButton({
     followButtonValue,
     orgID,
+    userID,
     followOrg,
     unfollowOrg,
 }: {
     followButtonValue: number;
     orgID: string;
-    followOrg: (orgID: string) => Promise<boolean>;
-    unfollowOrg: (orgID: string) => Promise<boolean>;
+    userID: string;
+    followOrg: (userID:string, orgID: string) => Promise<boolean>;
+    unfollowOrg: (userID:string, orgID: string) => Promise<boolean>;
 }) {
     const [state, setState] = useState(followButtonValue);
 
     const handleFollow = async () => {
-        const success = await followOrg(orgID);
+        const success = await followOrg(userID, orgID);
         if (success) {
             setState(2); // Update state to reflect "following"
         } else {
@@ -25,7 +27,7 @@ export default function FollowButton({
     };
 
     const handleUnfollow = async () => {
-        const success = await unfollowOrg(orgID);
+        const success = await unfollowOrg(userID, orgID);
         if (success) {
             setState(1); // Update state to reflect "not following"
         } else {
