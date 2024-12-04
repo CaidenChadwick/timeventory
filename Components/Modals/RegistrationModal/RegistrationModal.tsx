@@ -54,7 +54,7 @@ export default function RegistrationModal({ showRegisterModal, toggleRegisterMod
             toggleRegisterModal();
             if (receiveEmailsState)
                 try {
-                    const response = await fetch('/api/join', {
+                    const response = await fetch('/api/email/join', {
                         method: 'POST',
                         body: formData,
                     });
