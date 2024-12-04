@@ -5,7 +5,7 @@
 
 :root {
   --background: #112C81;
-  --foreground: #0c5ab9;
+  --foreground: white;
 }
 
 div {
@@ -20,12 +20,21 @@ p.orange {
   color: #f8af6a;
 }
 
+p {
+  color: white;
+}
 
 a {
   margin: 20px;
+  color: white;
+}
+
+input {
+  color: black;
 }
 
 h1 {
+  color: white;
   font-size: larger;
   font-style: italic;
 }
@@ -49,6 +58,10 @@ body {
   }
 }
 
+textarea {
+  color: black;
+}
+
 .collapse {
   visibility: visible;
 }
@@ -70,4 +83,22 @@ body {
   /* Ensures the label stays next to the checkbox */
   text-align: left;
   color: black;
+}
+
+button {
+  background-color: white;
+  color: darkblue;
+  margin: 2.5%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.topBottomLine {
+  border-top: 2px solid white;   /* Adjust thickness as needed */
+  margin-top: 20px;
+  border-bottom: 2px solid white; /* Adjust thickness as needed */
+  padding: 10px; /* Optional: Adds some spacing inside the div */
+  background-color: transparent; /* Optional: Change background color */
 }

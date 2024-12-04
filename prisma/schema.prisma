@@ -20,20 +20,25 @@ model Session {
 }
 
 model User {
-  id            String      @id @default(cuid())
-  email         String      @unique
-  username      String      @unique
-  passwordHash  String
-  following     Following[]
-  receiveEmails Boolean     @default(false)
+  id                String      @id @default(cuid())
+  email             String      @unique
+  username          String      @unique
+  passwordHash      String
+  following         Following[]
+  volunteering      Volunteer[]
+  volunteerRequest  VolunteeringRequest[]
+  receiveEmails     Boolean     @default(false)
 }
 
 model Organization {
-  id               String      @id @default(cuid())
-  ownerId          String //a user Id; might make it its own model
-  organizationName String      @unique
-  description      String?
-  followers        Following[]
+  id                String      @id @default(cuid())
+  ownerId           String //a user Id; might make it its own model
+  organizationName  String      @unique
+  description       String?
+  followers         Following[]
+  volunteers        Volunteer[]
+  volunteerRequests VolunteeringRequest[]
+  volunteerHours    VolunteerLog[]
 }
 
 model Event {
@@ -56,4 +61,38 @@ model Following {
   receiveAlerts Boolean      @default(true) // will be aleted of event creation
 
   @@id([userID, orgID])
+}
+
+model Volunteer {
+  user          User         @relation(fields: [userID], references: [id])
+  userID        String
+  org           Organization @relation(fields: [orgID], references: [id])
+  orgID         String
+  hourLogs      VolunteerLog[]
+
+  @@id([userID, orgID]) // Composite primary key ensures user-org uniqueness
+}
+
+model VolunteeringRequest {
+  user          User         @relation(fields: [userID], references: [id])
+  userID        String
+  org           Organization @relation(fields: [orgID], references: [id])
+  orgID         String
+  message       String?
+
+  @@id([userID, orgID])
+}
+
+model VolunteerLog {
+  id              String       @id @default(cuid())
+  org             Organization @relation(fields: [orgID], references: [id])
+  orgID           String
+  volunteer       Volunteer   @relation(fields: [volunteerUserID, volunteerOrgID], references: [userID, orgID])
+  volunteerUserID String
+  volunteerOrgID  String
+  startTime       DateTime
+  endTime         DateTime?
+  messesage       String?
+
+  @@index([volunteerUserID, volunteerOrgID]) // Optimizes queries on composite foreign key
 }
