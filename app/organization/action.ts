@@ -5,22 +5,23 @@ import { getOrgInfoByName, checkIfOwner } from '@/Models/orgModel'
 import { getSessionToken } from "@/utils/cookieManager";
 import { getUserId } from "@/Models/SessionModel"
 import { createEventWithOrgID, getOrgEvents, getEventData, getEventID } from '@/Models/eventModel'
-import { isFollowing, followOrg, unfollowOrg } from '@/Models/followingModel'
+import { isFollowing, followOrg, unfollowOrg, getFollowersByOrgId } from '@/Models/followingModel'
 import { doesRequestExist, isUserVolunteer, createVolunteerRequest, getRequestOfOrg } from '@/Models/VolunteerModel'
 import { getUsernameFromId } from '@/Models/UserModel'
 
-export async function getOrgInfo(orgName:string): Promise<Status> {
+export async function getOrgInfo(orgName: string): Promise<Status> {
     const status = await getOrgInfoByName(orgName)
     return status
 }
 
 export async function saveEvent(orgId: string, formData: {
-                                eventName: string; 
-                                timeOfEvent: Date; 
-                                placeOfEvent: string; 
-                                description: string; }): Promise<boolean> {
+    eventName: string;
+    timeOfEvent: Date;
+    placeOfEvent: string;
+    description: string;
+}): Promise<boolean> {
     const token = await getSessionToken();
-    if(token){
+    if (token) {
         try {
             const status = await createEventWithOrgID(orgId, token, formData.eventName, formData.timeOfEvent, formData.placeOfEvent, formData.description);
             return status.success;
@@ -45,14 +46,14 @@ export async function getEventDataWithName(eventName: string): Promise<Status> {
     }
 }
 
-export async function isUserOrgOwner(user:string, orgID: string): Promise<boolean> {
+export async function isUserOrgOwner(user: string, orgID: string): Promise<boolean> {
     return (await checkIfOwner(user, orgID)).success;
 }
 
 // 0 = user isn't logged in; print no button
 // 1 = user is logged and isn't following in; show the follow button
 // 2 = user is logged and is following; show the unfollow button
-export async function isUserFollowingOrg(user:string, orgID: string): Promise<number> {
+export async function isUserFollowingOrg(user: string, orgID: string): Promise<number> {
     const temp = await isFollowing(user, orgID);
     if (temp) {
         return 2;
@@ -63,7 +64,7 @@ export async function isUserFollowingOrg(user:string, orgID: string): Promise<nu
     return 0;
 }
 
-export async function unfollowOrganization(user:string, orgID: string): Promise<boolean> {
+export async function unfollowOrganization(user: string, orgID: string): Promise<boolean> {
     const status = await unfollowOrg(user, orgID);
     if (status) {
         return true;
@@ -122,4 +123,51 @@ export async function getAllRequest(userID: string, orgID: string): Promise<Stat
 
 export async function getUsername(userID: string): Promise<string> {
     return (await getUsernameFromId(userID)).payload;
+}
+
+export async function sendEmails(orgId: string, orgName: string, formData: {
+    eventName: string,
+    timeOfEvent: Date,
+    placeOfEvent: string,
+}): Promise<boolean> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null
+    };
+
+    if (orgId) {
+        const followers = (await getFollowersByOrgId(orgId)).payload;
+
+        const formattedDate = new Intl.DateTimeFormat('en-US', {
+            weekday: 'long',     // Full name of the day (e.g., "Monday")
+            day: 'numeric',      // Day of the month (e.g., "4")
+            hour: '2-digit',     // Two-digit hour
+            minute: '2-digit',   // Two-digit minute
+            hour12: true,        // 12-hour format (use false for 24-hour)
+        }).format(formData.timeOfEvent);
+
+        const newFormData = new FormData();
+        newFormData.append('orgName', orgName);
+        newFormData.append('eventName', formData.eventName);
+        newFormData.append('timeOfEvent', formattedDate);
+        newFormData.append('placeOfEvent', formData.placeOfEvent);
+        newFormData.append('recipients', JSON.stringify(followers));
+        try {
+            const response = await fetch('/api/email/event', {
+                method: 'POST',
+                body: newFormData,
+            });
+        }
+        catch (e) {
+            console.error('Error:', e);
+        }
+
+    } else {
+        status.success = false;
+        status.code = 422;
+        status.message = 'Organization ID is invalid or missing.';
+    }
+    return status.success;
 }

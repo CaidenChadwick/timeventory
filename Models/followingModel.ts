@@ -83,3 +83,35 @@ export async function isFollowing(userID: string, orgID: string): Promise<boolea
         return false;
     }
 }
+
+// Find all followers of an organization that opted into receiving emails
+export async function getFollowersByOrgId(orgId: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null
+    };
+
+    try {
+        const followers = await prisma.user.findMany({
+            where: {
+                following: {
+                    some: {
+                        orgID: orgId,   // Find users who follow the specific organization
+                        receiveEmails: true,      // Ensure the user has opted into emails
+                    },
+                },
+            }
+        });
+
+        const emails = followers.map(user => user.email);
+
+        status.payload = emails;
+    } catch (error) {
+        status.success = false;
+        status.code = 500;
+        status.message = "An error occurred while retrieving followers";
+    }
+    return status;
+}

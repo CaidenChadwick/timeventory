@@ -1,4 +1,4 @@
-'use server';
+'use server'
 
 import { registerUser } from '@/Models/UserModel';
 import { cookies } from 'next/headers';

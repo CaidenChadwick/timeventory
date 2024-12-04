@@ -61,7 +61,6 @@ export default function RegistrationModal({ showRegisterModal, toggleRegisterMod
                 }
                 catch (e) {
                     console.error('Error:', e);
-
                 }
         }
     }

@@ -8,7 +8,7 @@ import { Status } from '@/types/databaseUtilityTypes';
 // requires a user to be owner
 // requires a unique name
 // the user must be logged in
-export async function createOrg(session:string, name: string, email: string, description:string = ""): Promise<Status>{
+export async function createOrg(session: string, name: string, email: string, description: string = ""): Promise<Status> {
     //step 1: make status to track ourselve
     const status: Status = {
         success: true,
@@ -33,7 +33,7 @@ export async function createOrg(session:string, name: string, email: string, des
             console.log(org)
             status.payload = org.id;
         }
-        catch(e: any) {
+        catch (e: any) {
             // if the name isn't unique
             if (e.code === 'P2002') {
                 status.success = false;
@@ -56,7 +56,7 @@ export async function createOrg(session:string, name: string, email: string, des
     return status;
 }
 
-export async function getOrgNameById(orgID: string): Promise<Status>{
+export async function getOrgNameById(orgID: string): Promise<Status> {
     //step 1: make status to track ourselve
     const status: Status = {
         success: true,
@@ -85,7 +85,7 @@ export async function getOrgNameById(orgID: string): Promise<Status>{
 }
 
 
-export async function getOrgIdByName(orgName: string): Promise<Status>{
+export async function getOrgIdByName(orgName: string): Promise<Status> {
     //step 1: make status to track ourselve
     const status: Status = {
         success: true,
@@ -110,7 +110,7 @@ export async function getOrgIdByName(orgName: string): Promise<Status>{
             status.message = "getOrgOwnerIdByName failed. Couldn't find org";
         }
     }
-    catch (e: any){
+    catch (e: any) {
         status.success = false;
         status.code = 500;
         status.message = "getOrgOwnerIdByName failed. Internal Server Error";
@@ -119,7 +119,7 @@ export async function getOrgIdByName(orgName: string): Promise<Status>{
 }
 
 //if good, status is true and "ok"; else, success is false
-export async function checkIfOwner(userID: string, orgID: string): Promise<Status>{
+export async function checkIfOwner(userID: string, orgID: string): Promise<Status> {
     //step 1: make status to track ourselve
     const status: Status = {
         success: true,
