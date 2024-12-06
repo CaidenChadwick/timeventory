@@ -3,7 +3,7 @@
 'use client'
 
 import { useState, FormEvent, ChangeEvent } from 'react';
-import { registerUserAction } from './actions';
+import { registerUserAction, sendEmail } from './actions';
 import validate from '@/validation/client-validation';
 import { RegistrationData } from '@/types/formInputTypes';
 import { useInputValidation } from '@/utils/hooks';
@@ -47,24 +47,12 @@ export default function RegistrationForm() {
             receiveEmails: receiveEmailsState
         };
 
-        const formData = new FormData();
-        formData.append('email', emailState.value);
-        formData.append('username', usernameState.value);
-
         const message = await registerUserAction(registrationData);
         setErrorMessage(message);
         if ((!message)) {
-            if (receiveEmailsState)
-                try {
-                    const response = await fetch('/api/email/join', {
-                        method: 'POST',
-                        body: formData,
-                    });
-                }
-                catch (e) {
-                    console.error('Error:', e);
-
-                }
+            if (receiveEmailsState) {
+                const success = await sendEmail(registrationData.email, registrationData.username);
+            }
         }
     }
 

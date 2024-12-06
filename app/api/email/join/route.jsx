@@ -10,10 +10,6 @@ export async function POST(request) {
     const password = process.env.PUBLIC_EMAIL_PASSWORD;
     const myEmail = process.env.PUBLIC_PERSONAL_EMAIL;
 
-
-    const formData = await request.formData()
-    const to = formData.get('email')
-
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 587,
@@ -30,6 +26,8 @@ export async function POST(request) {
     });
 
     try {
+        const formData = await request.formData();
+        const to = formData.get('email');
         const user = formData.get('username');
 
         const emailBody = await JoinEmail(user);
