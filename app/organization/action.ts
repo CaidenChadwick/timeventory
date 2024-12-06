@@ -155,10 +155,17 @@ export async function sendEmails(orgId: string, orgName: string, formData: {
         newFormData.append('placeOfEvent', formData.placeOfEvent);
         newFormData.append('recipients', JSON.stringify(followers));
         try {
-            const response = await fetch('/api/email/event', {
+            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+            const response = await fetch(`${baseUrl}/api/email/event`, {
                 method: 'POST',
                 body: newFormData,
             });
+
+            if (response.status != 200) {
+                status.success = false;
+                status.code = response.status;
+                status.message = "Email Failed to Send.";
+            }
         }
         catch (e) {
             console.error('Error:', e);
