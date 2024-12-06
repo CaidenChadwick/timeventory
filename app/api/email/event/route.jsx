@@ -1,6 +1,6 @@
 'use server'
 import { NextResponse, NextRequest } from 'next/server'
-import { JoinEmail } from './template'
+import { EventEmail } from './template'
 import nodemailer from 'nodemailer';
 
 // Handles POST requests to /api
@@ -9,6 +9,14 @@ export async function POST(request) {
     const username = process.env.PUBLIC_EMAIL_USERNAME;
     const password = process.env.PUBLIC_EMAIL_PASSWORD;
     const myEmail = process.env.PUBLIC_PERSONAL_EMAIL;
+
+
+    const formData = await request.formData();
+    const emails = formData.get('recipients');
+    const orgName = formData.get('orgName');
+    const eventName = formData.get('eventName');
+    const timeOfEvent = formData.get('timeOfEvent');
+    const placeOfEvent = formData.get('placeOfEvent');
 
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -26,16 +34,15 @@ export async function POST(request) {
     });
 
     try {
-        const formData = await request.formData();
-        const to = formData.get('email');
-        const user = formData.get('username');
+        const emailBody = await EventEmail(orgName, eventName, timeOfEvent, placeOfEvent);
 
-        const emailBody = await JoinEmail(user);
+        // Parse the emails if necessary (e.g., they could be a JSON string)
+        const emailList = Array.isArray(emails) ? emails : JSON.parse(emails);  // Ensure it's an array
 
         const mail = await transporter.sendMail({
             from: username,
-            to: to,
-            subject: `Welcome to Timeventory`,
+            bcc: emailList.join(','),
+            subject: `Event Notification`,
             html: emailBody,
         })
 

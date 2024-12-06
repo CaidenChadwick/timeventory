@@ -5,15 +5,20 @@ import React, { useState } from 'react';
 interface EventFormProps {
     orgId: string; // Pass the orgId as a prop
     orgName: string;
-    saveEvent: (orgId: string, formData: { 
-        eventName: string; 
-        timeOfEvent: Date; 
-        placeOfEvent: string; 
-        description: string; 
+    saveEvent: (orgId: string, formData: {
+        eventName: string;
+        timeOfEvent: Date;
+        placeOfEvent: string;
+        description: string;
     }) => Promise<boolean>; // Prop for saving the event
+    sendEmails: (orgId: string, orgName: string, formData: {
+        eventName: string;
+        timeOfEvent: Date;
+        placeOfEvent: string;
+    }) => Promise<boolean>; // Prop for sending emails
 }
 
-export default function EventForm({ orgId, orgName, saveEvent }: EventFormProps) {
+export default function EventForm({ orgId, orgName, saveEvent, sendEmails }: EventFormProps) {
     const [eventName, setEventName] = useState('');
     const [timeOfEvent, setTimeOfEvent] = useState('');
     const [placeOfEvent, setPlaceOfEvent] = useState('');
@@ -30,7 +35,7 @@ export default function EventForm({ orgId, orgName, saveEvent }: EventFormProps)
         const timeOfEventDate = new Date(timeOfEvent);
 
         // Call the saveEvent function passed as a prop
-        const success = await saveEvent(orgId, {
+        let success = await saveEvent(orgId, {
             eventName,
             timeOfEvent: timeOfEventDate,
             placeOfEvent,
@@ -38,6 +43,12 @@ export default function EventForm({ orgId, orgName, saveEvent }: EventFormProps)
         });
 
         if (success) {
+            success = await sendEmails(orgId, orgName, {
+                eventName,
+                timeOfEvent: timeOfEventDate,
+                placeOfEvent,
+            });
+
             window.location.href = `/organization/${orgName}`; // Redirect after successful creation
         } else {
             alert("Failed to create event. Please try again.");
