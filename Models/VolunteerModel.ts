@@ -447,3 +447,33 @@ export async function getClockInStatus(userID: string, orgID: string): Promise<b
         return false; // Return false in case of error
     }
 }
+
+// get all logs. olny need start and end times
+export async function getAllLogs(userID: string, orgID: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "ok",
+        payload: null
+    };
+    try {
+        const logs = await prisma.volunteerLog.findMany({
+            where: {
+                volunteerUserID: userID,
+                orgID: orgID,
+            },
+            select: {
+                startTime: true,
+                endTime: true,
+            },
+        });
+        status.payload = logs;
+        return status;
+    } catch (error) {
+        console.error("Error fetching logs:", error);
+        status.success = false
+        status.code = 500
+        status.message = "server error"
+        return status;
+    }
+}
