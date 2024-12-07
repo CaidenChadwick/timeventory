@@ -6,7 +6,7 @@ import { getSessionToken } from "@/utils/cookieManager";
 import { getUserId } from "@/Models/SessionModel"
 import { createEventWithOrgID, getOrgEvents, getEventData, getEventID } from '@/Models/eventModel'
 import { isFollowing, followOrg, unfollowOrg } from '@/Models/followingModel'
-import { doesRequestExist, isUserVolunteer, createVolunteerRequest, getRequestOfOrg } from '@/Models/VolunteerModel'
+import { doesRequestExist, isUserVolunteer, createVolunteerRequest, getRequestOfOrg, clockInAction, getClockInStatus } from '@/Models/VolunteerModel'
 import { getUsernameFromId } from '@/Models/UserModel'
 
 export async function getOrgInfo(orgName:string): Promise<Status> {
@@ -122,4 +122,12 @@ export async function getAllRequest(userID: string, orgID: string): Promise<Stat
 
 export async function getUsername(userID: string): Promise<string> {
     return (await getUsernameFromId(userID)).payload;
+}
+
+export async function handleClockIn(userID: string, orgID: string):Promise<Status> {
+    return (await clockInAction(userID, orgID))
+}
+
+export async function isUserClockedIn(userID: string, orgID: string): Promise<boolean> {
+    return (await getClockInStatus(userID, orgID))
 }

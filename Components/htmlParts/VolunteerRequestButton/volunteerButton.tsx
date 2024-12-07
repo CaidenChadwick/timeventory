@@ -92,7 +92,7 @@ export default function VolunteerButton({
                         window.location.href = `/organization/${orgName}/clockIn`;
                     }}
                 >
-                    Clock In
+                    Time Sheet Page
                 </button>
             )}
         </div>

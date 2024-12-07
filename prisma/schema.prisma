@@ -69,6 +69,7 @@ model Volunteer {
   org           Organization @relation(fields: [orgID], references: [id])
   orgID         String
   hourLogs      VolunteerLog[]
+  isClockedIn   Boolean      @default(false)
 
   @@id([userID, orgID]) // Composite primary key ensures user-org uniqueness
 }
@@ -87,12 +88,11 @@ model VolunteerLog {
   id              String       @id @default(cuid())
   org             Organization @relation(fields: [orgID], references: [id])
   orgID           String
-  volunteer       Volunteer   @relation(fields: [volunteerUserID, volunteerOrgID], references: [userID, orgID])
+  volunteer       Volunteer    @relation(fields: [volunteerUserID, orgID], references: [userID, orgID])
   volunteerUserID String
-  volunteerOrgID  String
   startTime       DateTime
   endTime         DateTime?
   messesage       String?
 
-  @@index([volunteerUserID, volunteerOrgID]) // Optimizes queries on composite foreign key
+  @@index([volunteerUserID, orgID]) // Optimizes queries on composite foreign key
 }
