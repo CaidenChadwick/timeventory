@@ -63,8 +63,12 @@ export async function createVolunteerLog(
     try {
         const log = await prisma.volunteerLog.create({
             data: {
-                orgID: orgId,
-                volunteerUserID: userId,
+                org: {
+                    connect: { id: orgId } // Connect to the Organization by ID
+                },
+                volunteer: {
+                    connect: { userID_orgID: { userID: userId, orgID: orgId } } // Connect using the composite key
+                },
                 startTime,
                 endTime,
                 messesage: message,
@@ -348,7 +352,7 @@ export async function clockInAction(userID: string, orgID: string): Promise<Stat
         message: "ok",
         payload: null
     };
-
+    console.log("PRESSED")
     try {
         // Check if the user is a volunteer for the organization
         const volunteerStatus = await isUserVolunteer(userID, orgID);
