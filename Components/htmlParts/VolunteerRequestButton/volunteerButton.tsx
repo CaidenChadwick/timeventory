@@ -40,9 +40,19 @@ export default function VolunteerButton({
                         window.location.href = `/organization/${orgName}/request`;
                     }}
                 >
-                    Manage Volunteer Tracker
+                    Volunteer Request Tracker
                 </button>
             )}
+
+            {state === 0 && (
+                <button
+                    onClick={() => {
+                        window.location.href = `/organization/${orgName}/timesheet`;
+                    }}
+                >
+                    Volunteer Time Tracker
+                </button>
+            )}  
 
             {/* State 1: User not logged in */}
             {state === 1 && (
@@ -79,10 +89,10 @@ export default function VolunteerButton({
             {state === 4 && (
                 <button
                     onClick={() => {
-                        window.location.href = `/user/${userID}/volunteer-status`;
+                        window.location.href = `/organization/${orgName}/clockIn`;
                     }}
                 >
-                    View Volunteer Status
+                    Time Sheet Page
                 </button>
             )}
         </div>

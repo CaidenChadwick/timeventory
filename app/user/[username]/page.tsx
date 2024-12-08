@@ -1,4 +1,6 @@
-import { checkToSeeIfThisUserMatchesProfile, getUserInfo, getAllOrgsThatUserOwns } from '../action'
+import { checkToSeeIfThisUserMatchesProfile, getUserInfo, getAllOrgsThatUserOwns, getAllOrgsThatUserFollows } from '../action';
+import { Organization } from '../../organization/action';
+
 interface Organization {
     id: string;
     organizationName: string;
@@ -22,6 +24,8 @@ export default async function UrlInformation({
         const [username, email, id] = userInfo.payload;
         const orgsOwned = await getAllOrgsThatUserOwns(id);
         const isUserLoggedIn = await checkToSeeIfThisUserMatchesProfile(params.username);
+        const orgsFollowed = await getAllOrgsThatUserFollows(id); // Ensure you're passing the correct ID or username
+        
         return (
             <div>
                 <h1>Name: {username}</h1>
@@ -33,10 +37,26 @@ export default async function UrlInformation({
                     <p>User is not logged in</p>
                 )}
                 
-                {orgsOwned.success && orgsOwned.payload ? (
+                {orgsFollowed.success && orgsFollowed.payload && orgsFollowed.payload.length > 0 ? (
                     <div>
+                        <h1>Followed Organizations</h1>
+                        {orgsFollowed.payload.map((org: Organization) => (
+                            <a key={org.id} href={`/organization/${org.organizationName}`}>
+                                {org.organizationName}
+                            </a>
+                        ))}
+                    </div>
+                ) : (
+                    <p>No organizations followed.</p>
+                )}
+
+                {orgsOwned.success && orgsOwned.payload && orgsOwned.payload.length > 0 ? (
+                    <div>
+                        <h1>Hosted Organizations</h1>
                         {orgsOwned.payload.map((org: Organization) => (
-                            <a key={org.id} href = {`/organization/${org.organizationName}`}>{org.organizationName}</a>
+                            <a key={org.id} href={`/organization/${org.organizationName}`}>
+                                {org.organizationName}
+                            </a>
                         ))}
                     </div>
                 ) : null}

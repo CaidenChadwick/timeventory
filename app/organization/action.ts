@@ -5,8 +5,8 @@ import { getOrgInfoByName, checkIfOwner } from '@/Models/orgModel'
 import { getSessionToken } from "@/utils/cookieManager";
 import { getUserId } from "@/Models/SessionModel"
 import { createEventWithOrgID, getOrgEvents, getEventData, getEventID } from '@/Models/eventModel'
+import { doesRequestExist, isUserVolunteer, createVolunteerRequest, getRequestOfOrg, clockInAction, getClockInStatus, getAllLogs } from '@/Models/VolunteerModel'
 import { isFollowing, followOrg, unfollowOrg, getFollowersByOrgId } from '@/Models/followingModel'
-import { doesRequestExist, isUserVolunteer, createVolunteerRequest, getRequestOfOrg } from '@/Models/VolunteerModel'
 import { getUsernameFromId } from '@/Models/UserModel'
 
 export async function getOrgInfo(orgName: string): Promise<Status> {
@@ -124,6 +124,17 @@ export async function getAllRequest(userID: string, orgID: string): Promise<Stat
 export async function getUsername(userID: string): Promise<string> {
     return (await getUsernameFromId(userID)).payload;
 }
+
+export async function handleClockIn(userID: string, orgID: string):Promise<Status> {
+    return (await clockInAction(userID, orgID))
+}
+
+export async function isUserClockedIn(userID: string, orgID: string): Promise<boolean> {
+    return (await getClockInStatus(userID, orgID))
+}
+
+export async function getTheVolunteerLogs(userID: string, orgID: string): Promise<Status> {
+    return await getAllLogs(userID, orgID)
 
 export async function sendEmails(orgId: string, orgName: string, formData: {
     eventName: string,

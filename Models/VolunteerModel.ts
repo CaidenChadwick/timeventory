@@ -63,9 +63,12 @@ export async function createVolunteerLog(
     try {
         const log = await prisma.volunteerLog.create({
             data: {
-                orgID: orgId,
-                volunteerUserID: userId,
-                volunteerOrgID: orgId,
+                org: {
+                    connect: { id: orgId } // Connect to the Organization by ID
+                },
+                volunteer: {
+                    connect: { userID_orgID: { userID: userId, orgID: orgId } } // Connect using the composite key
+                },
                 startTime,
                 endTime,
                 messesage: message,
@@ -338,4 +341,139 @@ export async function declineRequest(userID: string, orgID: string): Promise<Sta
     }
 
     return status;
+}
+
+// if user clocked in, finish the last log
+// if user not clocked in, create log
+export async function clockInAction(userID: string, orgID: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "ok",
+        payload: null
+    };
+    console.log("PRESSED")
+    try {
+        // Check if the user is a volunteer for the organization
+        const volunteerStatus = await isUserVolunteer(userID, orgID);
+        if (!volunteerStatus.success) {
+            return volunteerStatus; // Return the error status
+        }
+
+        const volunteer = volunteerStatus.payload;
+
+        if (volunteer.isClockedIn) {
+            // Clock out
+            await prisma.volunteer.update({
+                where: { userID_orgID: { userID, orgID } },
+                data: { isClockedIn: false }
+            });
+
+            // Update the end time of the active log
+            const logUpdateStatus = await prisma.volunteerLog.updateMany({
+                where: {
+                    volunteerUserID: userID,
+                    orgID: orgID,
+                    endTime: null // Open-ended logs
+                },
+                data: { endTime: new Date() }
+            });
+
+            if (logUpdateStatus.count === 0) {
+                return {
+                    success: false,
+                    code: 404,
+                    message: "No active log found to update",
+                    payload: null
+                };
+            }
+
+            return {
+                success: true,
+                code: 200,
+                message: "User successfully clocked out",
+                payload: { action: "clockedOut" }
+            };
+        } else {
+            // Clock in
+            await prisma.volunteer.update({
+                where: { userID_orgID: { userID, orgID } },
+                data: { isClockedIn: true }
+            });
+
+            // Create a new volunteer log
+            const logStatus = await createVolunteerLog(orgID, userID, new Date());
+            if (!logStatus.success) {
+                return logStatus; // Return the error if log creation failed
+            }
+
+            return {
+                success: true,
+                code: 200,
+                message: "User successfully clocked in",
+                payload: { action: "clockedIn" }
+            };
+        }
+    } catch (error) {
+        console.error("Error in clockInAction:", error);
+        return {
+            success: false,
+            code: 500,
+            message: "An error occurred during the clock-in process",
+            payload: null
+        };
+    }
+}
+
+export async function getClockInStatus(userID: string, orgID: string): Promise<boolean> {
+    try {
+        // Fetch the volunteer record for the given user and organization
+        const volunteer = await prisma.volunteer.findUnique({
+            where: {
+                userID_orgID: {
+                    userID: userID,
+                    orgID: orgID,
+                },
+            },
+            select: {
+                isClockedIn: true, // Select only the isClockedIn field
+            },
+        });
+
+        // If volunteer record exists, return the clock-in status; otherwise, return false
+        return volunteer ? volunteer.isClockedIn : false;
+    } catch (error) {
+        console.error("Failed to retrieve clock-in status:", error);
+        return false; // Return false in case of error
+    }
+}
+
+// get all logs. olny need start and end times
+export async function getAllLogs(userID: string, orgID: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "ok",
+        payload: null
+    };
+    try {
+        const logs = await prisma.volunteerLog.findMany({
+            where: {
+                volunteerUserID: userID,
+                orgID: orgID,
+            },
+            select: {
+                startTime: true,
+                endTime: true,
+            },
+        });
+        status.payload = logs;
+        return status;
+    } catch (error) {
+        console.error("Error fetching logs:", error);
+        status.success = false
+        status.code = 500
+        status.message = "server error"
+        return status;
+    }
 }

@@ -202,3 +202,39 @@ export async function getOrgInfoByName(orgName: string): Promise<Status> {
 
     return status;
 }
+
+// returns all orgs that user follows
+export async function getAllOrgs(userID: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null,
+    };
+
+    try {
+        const followedOrgs = await prisma.following.findMany({
+            where: { userID: userID },
+            include: {
+                org: { // Include organization details
+                    select: {
+                        id: true,
+                        organizationName: true,
+                        description: true,
+                        // Add any other fields you want to retrieve
+                    },
+                },
+            },
+        });
+
+        // Extract organization details from the followedOrgs
+        status.payload = followedOrgs.map(following => following.org);
+        return status;
+    } catch (error) {
+        console.error("Error fetching followed organizations:", error);
+        status.success = false;
+        status.code = 500;
+        status.message = "Server error";
+        return status;
+    }
+}
