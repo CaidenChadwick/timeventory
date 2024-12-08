@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { logoutAction } from './actions';
 import LoginModal from '../Modals/LoginModal/LoginModal';
 import RegistrationModal from '../Modals/RegistrationModal/RegistrationModal';
+import FuzzySearchClient from '../Search/FuzzySearchClient';
+
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -34,7 +36,7 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
   }
 
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" data-bs-theme="dark">
+    <Navbar collapseOnSelect expand="lg" bg="dark" data-bs-theme="dark" className="py-0">
       <Container>
         <Navbar.Brand href="/">
           <Image
@@ -44,6 +46,7 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
             height={128}
           />
         </Navbar.Brand>
+        <FuzzySearchClient />
         {loggedIn &&
           <Navbar.Brand href="/user">
             User
