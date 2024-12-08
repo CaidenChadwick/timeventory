@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -43,7 +43,7 @@ export default function FuzzySearchClient() {
 
     return (
         <div className="relative flex">
-            <InputGroup className="mb-3">
+            <InputGroup className="">
                 <Form.Control
                     type="text"
                     placeholder="Find an Organization"

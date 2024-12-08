@@ -36,7 +36,7 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
   }
 
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" data-bs-theme="dark">
+    <Navbar collapseOnSelect expand="lg" bg="dark" data-bs-theme="dark" className="py-0">
       <Container>
         <Navbar.Brand href="/">
           <Image
