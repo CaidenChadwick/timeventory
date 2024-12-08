@@ -58,7 +58,7 @@ model Following {
   org           Organization @relation(fields: [orgID], references: [id])
   orgID         String
   receiveEmails Boolean      @default(true) // org can talk to you
-  receiveAlerts Boolean      @default(true) // will be aleted of event creation
+  receiveAlerts Boolean      @default(true) // will be alerted of event creation
 
   @@id([userID, orgID])
 }

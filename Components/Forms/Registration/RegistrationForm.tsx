@@ -3,7 +3,7 @@
 'use client'
 
 import { useState, FormEvent, ChangeEvent } from 'react';
-import { registerUserAction } from './actions';
+import { registerUserAction, sendEmail } from './actions';
 import validate from '@/validation/client-validation';
 import { RegistrationData } from '@/types/formInputTypes';
 import { useInputValidation } from '@/utils/hooks';
@@ -49,6 +49,11 @@ export default function RegistrationForm() {
 
         const message = await registerUserAction(registrationData);
         setErrorMessage(message);
+        if ((!message)) {
+            if (receiveEmailsState) {
+                const success = await sendEmail(registrationData.email, registrationData.username);
+            }
+        }
     }
 
     return (

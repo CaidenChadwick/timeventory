@@ -7,5 +7,5 @@ export type RegistrationData = {
     email: string;
     username: string;
     password: string;
-    receiveEmails: Boolean;
+    receiveEmails: boolean;
 }

@@ -1,15 +1,14 @@
 'use server'
 import { NextResponse, NextRequest } from 'next/server'
-import { OrgEmail } from './template'
-const nodemailer = require('nodemailer');
+import { JoinEmail } from './template'
+import nodemailer from 'nodemailer';
 
 // Handles POST requests to /api
 
-export async function POST(request, email) {
-    const username = process.env.NEXT_PUBLIC_EMAIL_USERNAME;
-    const password = process.env.NEXT_PUBLIC_EMAIL_PASSWORD;
-    const myEmail = process.env.NEXT_PUBLIC_PERSONAL_EMAIL;
-
+export async function POST(request) {
+    const username = process.env.PUBLIC_EMAIL_USERNAME;
+    const password = process.env.PUBLIC_EMAIL_PASSWORD;
+    const myEmail = process.env.PUBLIC_PERSONAL_EMAIL;
 
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -27,22 +26,24 @@ export async function POST(request, email) {
     });
 
     try {
+        const formData = await request.formData();
+        const to = formData.get('email');
+        const user = formData.get('username');
 
-
+        const emailBody = await JoinEmail(user);
 
         const mail = await transporter.sendMail({
             from: username,
             to: to,
-            replyTo: myEmail,
-            subject: `Event Subject Line`,
-            html: OrgEmail,
+            subject: `Welcome to Timeventory`,
+            html: emailBody,
         })
 
         return NextResponse.json({ message: "Success: email was sent" })
 
     } catch (error) {
         console.log(error)
-        NextResponse.status(500).json({ message: "COULD NOT SEND MESSAGE" })
+        return NextResponse.json({ message: "COULD NOT SEND MESSAGE" }, { status: 500 });
     }
 
 }

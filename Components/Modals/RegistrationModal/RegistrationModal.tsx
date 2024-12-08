@@ -3,7 +3,7 @@ import { useInputValidation } from '@/utils/hooks';
 import validate from '@/validation/client-validation';
 import { RegistrationData } from '@/types/formInputTypes';
 import { RegistrationValidationSchema } from '@/validation/validationSchema';
-import { registerUserAction } from './actions';
+import { registerUserAction, sendEmail } from './actions';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -44,25 +44,14 @@ export default function RegistrationModal({ showRegisterModal, toggleRegisterMod
             receiveEmails: receiveEmailsState
         };
 
-        const formData = new FormData();
-        formData.append('email', emailState.value);
-        formData.append('username', usernameState.value);
-
         const message = await registerUserAction(registrationData);
         setErrorMessage(message);
         if ((!message)) {
             toggleRegisterModal();
-            if (receiveEmailsState)
-                try {
-                    const response = await fetch('/api/join', {
-                        method: 'POST',
-                        body: formData,
-                    });
-                }
-                catch (e) {
-                    console.error('Error:', e);
+            if (receiveEmailsState) {
+                const success = await sendEmail(registrationData.email, registrationData.username);
+            }
 
-                }
         }
     }
 
