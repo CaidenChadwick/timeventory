@@ -8,7 +8,7 @@ export async function getOrganizationBySearch(query: string): Promise<{ id: stri
     try {
         // Use Fuse.js for case-insensitive search
         const items = await prisma.organization.findMany({
-            take: 10 // Limit results
+            take: 3 // Limit results
         });
         const fuse = new Fuse(items, {
             keys: ["organizationName", "description"],
