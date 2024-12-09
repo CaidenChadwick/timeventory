@@ -3,7 +3,7 @@
 import { Status } from '@/types/databaseUtilityTypes'
 import { getOrgInfoByName, checkIfOwner } from '@/Models/orgModel'
 import { getSessionToken } from "@/utils/cookieManager";
-import { getUserId } from "@/Models/SessionModel"
+import { getUserId, isLoggedIn } from "@/Models/SessionModel"
 import { createEventWithOrgID, getOrgEvents, getEventData, getEventID } from '@/Models/eventModel'
 import { doesRequestExist, isUserVolunteer, createVolunteerRequest, getRequestOfOrg, clockInAction, getClockInStatus, getAllLogs, getAllVolunteers } from '@/Models/VolunteerModel'
 import { isFollowing, followOrg, unfollowOrg, getFollowersByOrgId } from '@/Models/followingModel'
@@ -54,6 +54,10 @@ export async function isUserOrgOwner(user: string, orgID: string): Promise<boole
 // 1 = user is logged and isn't following in; show the follow button
 // 2 = user is logged and is following; show the unfollow button
 export async function isUserFollowingOrg(user: string, orgID: string): Promise<number> {
+    const userLoggedIn = await isLoggedIn();
+    if (!userLoggedIn) {
+        return 0;
+    }
     const temp = await isFollowing(user, orgID);
     if (temp) {
         return 2;
@@ -61,7 +65,6 @@ export async function isUserFollowingOrg(user: string, orgID: string): Promise<n
     else {
         return 1;
     }
-    return 0;
 }
 
 export async function unfollowOrganization(user: string, orgID: string): Promise<boolean> {

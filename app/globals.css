@@ -135,6 +135,9 @@ a.fakeButton:hover {
   font-weight: bold;
 }
 
+button.disabled:hover {
+  font-weight: normal
+}
 button:hover {
   font-weight: bold;
 }
