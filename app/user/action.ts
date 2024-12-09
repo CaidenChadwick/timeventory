@@ -5,6 +5,7 @@ import { getUserData, getUsername } from '@/Models/UserModel'
 import { getOrgsUserFollows, getAllOrgs } from '@/Models/orgModel'
 import { getSessionToken } from '@/utils/cookieManager';
 import { Status } from '@/types/databaseUtilityTypes';
+import { getAllOrgsUserVolunteersFor } from '@/Models/VolunteerModel'
 
 export async function checkToSeeIfThisUserMatchesProfile(username:string): Promise<boolean> {
     return username === await getUserNameFromSession()
@@ -34,4 +35,8 @@ export async function getAllOrgsThatUserOwns(userId:string): Promise<Status> {
 
 export async function getAllOrgsThatUserFollows(userId:string):Promise<Status> {
     return await getAllOrgs(userId)
+}
+
+export async function handleGetAllOrgVolunteer(userID: string):Promise<Status> {
+    return await getAllOrgsUserVolunteersFor(userID)
 }

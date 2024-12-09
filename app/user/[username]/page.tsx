@@ -1,4 +1,10 @@
-import { checkToSeeIfThisUserMatchesProfile, getUserInfo, getAllOrgsThatUserOwns, getAllOrgsThatUserFollows } from '../action';
+import { 
+    checkToSeeIfThisUserMatchesProfile, 
+    getUserInfo, 
+    getAllOrgsThatUserOwns, 
+    getAllOrgsThatUserFollows, 
+    handleGetAllOrgVolunteer 
+} from '../action';
 
 interface Organization {
     id: string;
@@ -22,46 +28,60 @@ export default async function UrlInformation({
     if (userInfo.success && userInfo.payload) {
         const [username, email, id] = userInfo.payload;
         const orgsOwned = await getAllOrgsThatUserOwns(id);
+        const orgsFollowed = await getAllOrgsThatUserFollows(id);
         const isUserLoggedIn = await checkToSeeIfThisUserMatchesProfile(decodeURIComponent(params.username));
-        const orgsFollowed = await getAllOrgsThatUserFollows(id); // Ensure you're passing the correct ID or username
-        
+        const orgsVolunteered = await handleGetAllOrgVolunteer(id);
+
         return (
             <div>
-                <h1 className = "orange">Name: {username}</h1>
+                <h1 className="orange">Name: {username}</h1>
                 {email ? <h2>Email: {email}</h2> : <h2>No Email</h2>}
 
                 <br />
                 {isUserLoggedIn ? (
                     <div>
-                        <a href={`/createOrg`} className = "fakeButton">Create Org</a>
+                        <a href={`/createOrg`} className="fakeButton">Create Org</a>
                     </div>
                 ) : (
                     <p>User is not logged in</p>
                 )}
-                
+
                 <div>
-                    <h1 className = "orange">--- Followed Organizations ---</h1>
+                    <h1 className="orange">--- Followed Organizations ---</h1>
                     {orgsFollowed.success && orgsFollowed.payload && orgsFollowed.payload.length > 0 ? (
                         orgsFollowed.payload.map((org: Organization) => (
-                            <a className = "link" key={org.id} href={`/organization/${org.organizationName}`}>
+                            <a className="link" key={org.id} href={`/organization/${org.organizationName}`}>
                                 {org.organizationName}
                             </a>
                         ))
                     ) : (
-                        <p>No organizations followed.</p>
+                        <p className='grey'>No organizations followed.</p>
                     )}
                 </div>
 
                 {orgsOwned.success && orgsOwned.payload && orgsOwned.payload.length > 0 ? (
                     <div>
-                        <h1 className = "orange">--- Hosted Organizations ---</h1>
+                        <h1 className="orange">--- Hosted Organizations ---</h1>
                         {orgsOwned.payload.map((org: Organization) => (
-                            <a className = "link" key={org.id} href={`/organization/${org.organizationName}`}>
+                            <a className="link" key={org.id} href={`/organization/${org.organizationName}`}>
                                 {org.organizationName}
                             </a>
                         ))}
                     </div>
                 ) : null}
+
+                <div>
+                    <h1 className="orange">--- Volunteering At ---</h1>
+                    {orgsVolunteered.success && orgsVolunteered.payload && orgsVolunteered.payload.length > 0 ? (
+                        orgsVolunteered.payload.map((org: Organization) => (
+                            <a className="link" key={org.id} href={`/organization/${org.organizationName}`}>
+                                {org.organizationName}
+                            </a>
+                        ))
+                    ) : (
+                        <p className='grey'>Empty Volunteer List</p>
+                    )}
+                </div>
             </div>
         );
     } else {

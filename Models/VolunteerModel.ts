@@ -538,3 +538,54 @@ export async function getAllVolunteers(orgID: string): Promise<Status> {
         return status;
     }
 }
+
+export async function getAllOrgsUserVolunteersFor(userID: string): Promise<Status> {
+    try {
+        // Fetch all organizations where the user is a volunteer
+        const organizations = await prisma.volunteer.findMany({
+            where: {
+                userID: userID,
+            },
+            include: {
+                org: {
+                    select: {
+                        id: true,
+                        organizationName: true,
+                        description: true,
+                    },
+                },
+            },
+        });
+
+        if (organizations.length === 0) {
+            return {
+                success: false,
+                code: 404,
+                message: 'No organizations found where the user volunteers.',
+                payload: null,
+            };
+        }
+
+        // Map the results to the desired payload structure
+        const result = organizations.map((volunteer) => ({
+            orgID: volunteer.org.id,
+            orgName: volunteer.org.organizationName,
+            orgDescription: volunteer.org.description,
+        }));
+
+        return {
+            success: true,
+            code: 200,
+            message: 'Organizations fetched successfully.',
+            payload: result,
+        };
+    } catch (error) {
+        console.error('Error fetching organizations:', error);
+        return {
+            success: false,
+            code: 500,
+            message: 'An error occurred while fetching organizations.',
+            payload: null,
+        };
+    }
+}
