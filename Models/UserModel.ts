@@ -84,7 +84,7 @@ export async function login(loginData: LoginData): Promise<Status> {
 
     // Set up status object
     const status: Status = {
-        success: true,
+        success: false,
         code: 200,
         message: "OK",
         payload: null
@@ -105,7 +105,12 @@ export async function login(loginData: LoginData): Promise<Status> {
             status.payload = sessionToken;
 
             // Return the session token
-            return status;
+            status.success = true;
+        } else {
+            // If passwords do not match or username not found, set status
+            status.success = false;
+            status.code = 401;
+            status.message = "Unauthorized";
         }
 
     } catch (err) {
@@ -117,11 +122,6 @@ export async function login(loginData: LoginData): Promise<Status> {
         return status;
 
     }
-
-    // If passwords do not match or username not found, set status
-    status.success = false;
-    status.code = 401;
-    status.message = "Unauthorized";
 
     // Return the status object
     return status;
