@@ -3,7 +3,11 @@ import HomePageWrapper from '@/Components/HomePage/HomePageWrapper';
 
 const HomePage: React.FC = () => {
   return (
-    <HomePageWrapper />
+    <div>
+      <br></br>
+      <h1 className='orange'>Explore, Connect, Volunteer: Top Organizations</h1>
+      <HomePageWrapper />
+    </div>
   );
 };
 
