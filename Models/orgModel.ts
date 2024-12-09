@@ -267,3 +267,17 @@ export async function getOwnedOrgs(userID: string): Promise<Status> {
         return status;
     }
 }
+
+export async function getFollowerCount(orgID: string): Promise<number> {
+    try {
+        const count = await prisma.following.count({
+            where: {
+                orgID: orgID,
+            },
+        });
+        return count;
+    } catch (error) {
+        console.error("Error fetching follower count:", error);
+        return 0;
+    }
+}

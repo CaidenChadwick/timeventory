@@ -12,8 +12,8 @@ export default function FollowButton({
     followButtonValue: number;
     orgID: string;
     userID: string;
-    followOrg: (userID:string, orgID: string) => Promise<boolean>;
-    unfollowOrg: (userID:string, orgID: string) => Promise<boolean>;
+    followOrg: (userID: string, orgID: string) => Promise<boolean>;
+    unfollowOrg: (userID: string, orgID: string) => Promise<boolean>;
 }) {
     const [state, setState] = useState(followButtonValue);
 
@@ -21,6 +21,7 @@ export default function FollowButton({
         const success = await followOrg(userID, orgID);
         if (success) {
             setState(2); // Update state to reflect "following"
+            window.location.reload(); // Reload the page
         } else {
             alert('Failed to follow the organization. Please try again.');
         }
@@ -30,6 +31,7 @@ export default function FollowButton({
         const success = await unfollowOrg(userID, orgID);
         if (success) {
             setState(1); // Update state to reflect "not following"
+            window.location.reload(); // Reload the page
         } else {
             alert('Failed to unfollow the organization. Please try again.');
         }

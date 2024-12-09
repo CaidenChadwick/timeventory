@@ -1,6 +1,7 @@
 import { getOrgInfo, findEventsOfOrg, isUserOrgOwner, isUserFollowingOrg, unfollowOrganization, followOrganization, getTheUserId, userVolunteerStatus, createVolunteeringRequest } from '../action';
 import FollowButton from '@/Components/htmlParts/followButton/followButton'; 
 import VolunteerButton from '@/Components/htmlParts/VolunteerRequestButton/volunteerButton'; 
+import { getFollowerCount } from '@/Models/orgModel'
 
 interface EventData {
     id: string;
@@ -20,6 +21,7 @@ export default async function UrlInformation({
     const userID = await getTheUserId();
     const isOwner = await isUserOrgOwner(userID, orgInfo.payload["id"]);
     const orgEvents = await findEventsOfOrg(orgInfo.payload["id"]);
+    const followerCount = await getFollowerCount(orgInfo.payload["id"]);
     var followButtonValue = 0
     var volunteerButtonValue = 0
     if (!isOwner) {
@@ -32,6 +34,7 @@ export default async function UrlInformation({
         return (
             <div>
                 <p className='orange'>{orgInfo.payload["organizationName"]}</p>
+                <p>Follower Count: {followerCount}</p>
                 <p>{orgInfo.payload["description"]}</p>
 
                 {orgEvents.success && orgEvents.payload ? (
