@@ -238,3 +238,32 @@ export async function getAllOrgs(userID: string): Promise<Status> {
         return status;
     }
 }
+
+/**
+ * Get the organizations a user owns
+ * @param userID - User's ID
+ * @returns All organizations the user owns, null if userID is invalid
+ */
+export async function getOwnedOrgs(userID: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "OK",
+        payload: null,
+    };
+
+    try {
+        const ownedOrgs = await prisma.organization.findMany({
+            where: { ownerId: userID },
+        });
+
+        status.payload = ownedOrgs;
+        return status;
+    } catch (error) {
+        console.error("Error fetching owned organizations:", error);
+        status.success = false;
+        status.code = 500;
+        status.message = "Server error";
+        return status;
+    }
+}
