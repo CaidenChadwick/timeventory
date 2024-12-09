@@ -125,7 +125,7 @@ export async function getUsername(userID: string): Promise<string> {
     return (await getUsernameFromId(userID)).payload;
 }
 
-export async function handleClockIn(userID: string, orgID: string):Promise<Status> {
+export async function handleClockIn(userID: string, orgID: string): Promise<Status> {
     return (await clockInAction(userID, orgID))
 }
 
@@ -135,6 +135,7 @@ export async function isUserClockedIn(userID: string, orgID: string): Promise<bo
 
 export async function getTheVolunteerLogs(userID: string, orgID: string): Promise<Status> {
     return await getAllLogs(userID, orgID)
+}
 
 export async function sendEmails(orgId: string, orgName: string, formData: {
     eventName: string,

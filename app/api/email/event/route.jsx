@@ -34,7 +34,12 @@ export async function POST(request) {
     });
 
     try {
-        const emailBody = await EventEmail(orgName, eventName, timeOfEvent, placeOfEvent);
+        const emailBody = await EventEmail(
+            decodeURIComponent(orgName),
+            decodeURIComponent(eventName),
+            decodeURIComponent(timeOfEvent),
+            decodeURIComponent(placeOfEvent)
+        );
 
         // Parse the emails if necessary (e.g., they could be a JSON string)
         const emailList = Array.isArray(emails) ? emails : JSON.parse(emails);  // Ensure it's an array
