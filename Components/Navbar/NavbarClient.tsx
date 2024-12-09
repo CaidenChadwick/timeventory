@@ -32,7 +32,6 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
     event.preventDefault();
     const message = await logoutAction();
     setErrorMessage(message);
-
   }
 
   return (

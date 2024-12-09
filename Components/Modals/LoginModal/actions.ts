@@ -23,5 +23,5 @@ export async function loginAction(loginData: LoginData): Promise<boolean> {
     cookieObj.set('sessionToken', sessionToken);
 
     // Redirect to profile page
-    redirect('/user');
+    return true;
 }
