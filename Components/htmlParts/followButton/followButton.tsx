@@ -38,7 +38,7 @@ export default function FollowButton({
     };
 
     if (state === 0) {
-        return <button className='nopadding' disabled>Please log in to follow this organization</button>;
+        return <button className='disabled' disabled>Please log in to follow this organization</button>;
     }
 
     if (state === 1) {

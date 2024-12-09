@@ -95,7 +95,7 @@ export async function deleteSession(sessionToken: string): Promise<void> {
  * @returns True if the user is logged in, false otherwise
  */
 
-export async function isLoggedIn() {
+export async function isLoggedIn():Promise<boolean> {
     const sessionToken = await getSessionToken();
     if (!sessionToken) return false;
     const userId = await getUserId(sessionToken.toString());
