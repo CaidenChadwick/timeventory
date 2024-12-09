@@ -68,7 +68,6 @@ export default function NavbarClient({ loggedIn, user }: { loggedIn: boolean, us
             <Nav.Link onClick={toggleRegisterModal}>Register</Nav.Link>
           </Nav>
         }
-
         {loggedIn &&
           <Nav>
             <Nav.Link onClick={handleLogOut}>Log Out</Nav.Link>
