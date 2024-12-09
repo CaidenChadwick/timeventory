@@ -13,7 +13,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 
 
-export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
+export default function NavbarClient({ loggedIn, user }: { loggedIn: boolean, user: string | null }) {
 
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
   const [showRegisterModal, setShowRegisterModal] = useState<boolean>(false);
@@ -46,9 +46,9 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
           />
         </Navbar.Brand>
         <FuzzySearchClient />
-        {loggedIn &&
-          <Navbar.Brand href="/user" className = "link">
-            User
+        {loggedIn && user &&
+          <Navbar.Brand href="/user" className="link">
+            {user}
           </Navbar.Brand>}
 
       </Container>
