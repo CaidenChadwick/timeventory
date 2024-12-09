@@ -69,19 +69,6 @@ export default async function UrlInformation({
                         ))}
                     </div>
                 ) : null}
-
-                <div>
-                    <h1 className="orange">--- Volunteering At ---</h1>
-                    {orgsVolunteered.success && orgsVolunteered.payload && orgsVolunteered.payload.length > 0 ? (
-                        orgsVolunteered.payload.map((org: Organization) => (
-                            <a className="link" key={org.id} href={`/organization/${org.organizationName}`}>
-                                {org.organizationName}
-                            </a>
-                        ))
-                    ) : (
-                        <p className='grey'>Empty Volunteer List</p>
-                    )}
-                </div>
             </div>
         );
     } else {
