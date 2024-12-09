@@ -73,7 +73,7 @@ export default async function UrlInformation({
                 )}
 
                 {isOwner && (
-                    <a href={`/organization/${params.organization}/createEvent`}>Create Event</a>
+                    <a className = 'fakeButton' href={`/organization/${params.organization}/createEvent`}>Create Event</a>
                 )}
             </div>
         );
