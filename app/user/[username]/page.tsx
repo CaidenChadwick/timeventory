@@ -1,5 +1,4 @@
 import { checkToSeeIfThisUserMatchesProfile, getUserInfo, getAllOrgsThatUserOwns, getAllOrgsThatUserFollows } from '../action';
-import { Organization } from '../../organization/action';
 
 interface Organization {
     id: string;
