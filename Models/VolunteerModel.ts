@@ -477,3 +477,64 @@ export async function getAllLogs(userID: string, orgID: string): Promise<Status>
         return status;
     }
 }
+
+// gets all volunteers and cacluate their total hours
+export async function getAllVolunteers(orgID: string): Promise<Status> {
+    const status: Status = {
+        success: true,
+        code: 200,
+        message: "ok",
+        payload: null,
+    };
+
+    try {
+        const volunteers = await prisma.volunteer.findMany({
+            where: {
+                orgID: orgID,
+            },
+            select: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                    },
+                },
+                isClockedIn: true,
+                hourLogs: {
+                    select: {
+                        startTime: true,
+                        endTime: true,
+                    },
+                },
+            },
+        });
+
+        // Calculate total hours for each volunteer
+        const volunteersWithHours = volunteers.map((volunteer) => {
+            const totalDuration = volunteer.hourLogs.reduce((total, log) => {
+                const startTime = new Date(log.startTime);
+                const endTime = log.endTime ? new Date(log.endTime) : new Date(); // Use current time if still clocked in
+                return total + (endTime.getTime() - startTime.getTime());
+            }, 0);
+
+            const totalHours = Math.floor(totalDuration / (1000 * 60 * 60)); // Convert to hours
+            const totalMinutes = Math.floor((totalDuration % (1000 * 60 * 60)) / (1000 * 60)); // Remaining minutes
+
+            return {
+                user: volunteer.user,
+                isClockedIn: volunteer.isClockedIn,
+                totalHours: `${totalHours} hours and ${totalMinutes} minutes`,
+            };
+        });
+
+        status.payload = volunteersWithHours;
+        return status;
+    } catch (error) {
+        console.error("Error fetching volunteers:", error);
+        status.success = false;
+        status.code = 500;
+        status.message = "server error";
+        return status;
+    }
+}

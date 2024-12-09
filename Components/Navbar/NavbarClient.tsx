@@ -48,7 +48,7 @@ export default function NavbarClient({ loggedIn }: { loggedIn: boolean }) {
         </Navbar.Brand>
         <FuzzySearchClient />
         {loggedIn &&
-          <Navbar.Brand href="/user">
+          <Navbar.Brand href="/user" className = "link">
             User
           </Navbar.Brand>}
 

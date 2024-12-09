@@ -27,20 +27,21 @@ export default async function UrlInformation({
         
         return (
             <div>
-                <h1>Name: {username}</h1>
+                <h1 className = "orange">Name: {username}</h1>
                 {email ? <h2>Email: {email}</h2> : <h2>No Email</h2>}
 
+                <br></br>
                 {isUserLoggedIn ? (
-                    <a href={`/createOrg`}>Create Org</a>
+                    <a href={`/createOrg`} className = "fakeButton">Create Org</a>
                 ) : (
                     <p>User is not logged in</p>
                 )}
                 
                 {orgsFollowed.success && orgsFollowed.payload && orgsFollowed.payload.length > 0 ? (
                     <div>
-                        <h1>Followed Organizations</h1>
+                        <h1 className = "orange">--- Followed Organizations ---</h1>
                         {orgsFollowed.payload.map((org: Organization) => (
-                            <a key={org.id} href={`/organization/${org.organizationName}`}>
+                            <a className = "link" key={org.id} href={`/organization/${org.organizationName}`}>
                                 {org.organizationName}
                             </a>
                         ))}
@@ -51,9 +52,9 @@ export default async function UrlInformation({
 
                 {orgsOwned.success && orgsOwned.payload && orgsOwned.payload.length > 0 ? (
                     <div>
-                        <h1>Hosted Organizations</h1>
+                        <h1 className = "orange">--- Hosted Organizations ---</h1>
                         {orgsOwned.payload.map((org: Organization) => (
-                            <a key={org.id} href={`/organization/${org.organizationName}`}>
+                            <a className = "link" key={org.id} href={`/organization/${org.organizationName}`}>
                                 {org.organizationName}
                             </a>
                         ))}
