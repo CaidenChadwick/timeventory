@@ -20,6 +20,7 @@ const ClockInButton: React.FC<ClockInButtonProps> = ({
         const status = await onClockIn(userID, orgID); // Call the passed clock in function
         if (status.success) {
             setIsClockedIn(prev => !prev); // Toggle clocked-in status
+            window.location.reload(); // Refresh the page
         } else {
             console.error("Failed to toggle clock in/out");
         }
