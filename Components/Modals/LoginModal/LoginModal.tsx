@@ -1,15 +1,28 @@
 import { loginAction } from './actions';
 import { useState } from 'react';
 import { FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { LoginData } from '@/types/formInputTypes';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 export default function LoginModal({ showLoginModal, toggleLoginModal }: { showLoginModal: boolean, toggleLoginModal: () => void }) {
+    const router = useRouter();
     const [usernameState, setUsernameState] = useState<string>('');
     const [passwordState, setPasswordState] = useState<string>('');
     const [error, setError] = useState(false);
+
+    const handleModalOpen = () => {
+        setError(false);
+    }
+
+    const handleModalClose = () => {
+        setUsernameState("");
+        setPasswordState("");
+        setError(false);
+        toggleLoginModal();
+    }
 
     // Handle the form submission
     const handleSumbit = async (event: FormEvent<HTMLFormElement>) => {
@@ -20,19 +33,17 @@ export default function LoginModal({ showLoginModal, toggleLoginModal }: { showL
             password: passwordState
         };
 
-        setError(!(await loginAction(loginData)));
+        const success = (await loginAction(loginData)) || false;
+        setError(!success);
 
-        if (!error) {
-            toggleLoginModal();
+        if (success) {
+            handleModalClose();
+            router.push("/user");
         }
     }
 
-    const handleModalOpen = () => {
-        setError(false);
-    }
-
     return (
-        <Modal show={showLoginModal} onShow={handleModalOpen} onHide={toggleLoginModal} animation={false}>
+        <Modal show={showLoginModal} onShow={handleModalOpen} onHide={handleModalClose} animation={false}>
             <Modal.Header closeButton>
                 <Modal.Title>Login</Modal.Title>
             </Modal.Header>

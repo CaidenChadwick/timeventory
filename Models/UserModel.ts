@@ -108,7 +108,6 @@ export async function login(loginData: LoginData): Promise<Status> {
             status.success = true;
         } else {
             // If passwords do not match or username not found, set status
-            status.success = false;
             status.code = 401;
             status.message = "Unauthorized";
         }
