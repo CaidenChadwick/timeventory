@@ -27,18 +27,13 @@ export async function isUserLoggedIn():Promise<boolean> {
 export async function saveOrganization(formData: { name: string; description?: string; email: string }): Promise<boolean> {
     const token = await getSessionToken();
     let message = "";
-    console.log(alert)
     if(token){
         try {
             const status = await createOrg(token, formData.name, formData.email, formData.description);
-            alert(status.message)
-            alert(status.success)
             return status.success;
         } catch (error) {
-            alert(error)
             console.error("Failed to save organization:", error);
         }
     }
-    alert(message)
     return false;
 }

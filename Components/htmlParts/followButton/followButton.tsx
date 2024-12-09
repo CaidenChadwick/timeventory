@@ -36,15 +36,15 @@ export default function FollowButton({
     };
 
     if (state === 0) {
-        return <button disabled>Please log in to follow this organization</button>;
+        return <button className='nopadding' disabled>Please log in to follow this organization</button>;
     }
 
     if (state === 1) {
-        return <button onClick={handleFollow}>Follow Organization</button>;
+        return <button className='nopadding' onClick={handleFollow}>Follow Organization</button>;
     }
 
     if (state === 2) {
-        return <button onClick={handleUnfollow}>Unfollow Organization</button>;
+        return <button className='nopadding' onClick={handleUnfollow}>Unfollow Organization</button>;
     }
 
     return null;

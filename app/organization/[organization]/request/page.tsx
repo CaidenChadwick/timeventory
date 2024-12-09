@@ -38,7 +38,7 @@ export default async function NewEventPage({
 
             return {
                 userID: request.userID,
-                usernameResponse,
+                userName: usernameResponse,
                 orgID: orgId,
                 message: request.message,
             };

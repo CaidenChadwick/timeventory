@@ -5,7 +5,7 @@ import { getOrgInfoByName, checkIfOwner } from '@/Models/orgModel'
 import { getSessionToken } from "@/utils/cookieManager";
 import { getUserId } from "@/Models/SessionModel"
 import { createEventWithOrgID, getOrgEvents, getEventData, getEventID } from '@/Models/eventModel'
-import { doesRequestExist, isUserVolunteer, createVolunteerRequest, getRequestOfOrg, clockInAction, getClockInStatus, getAllLogs } from '@/Models/VolunteerModel'
+import { doesRequestExist, isUserVolunteer, createVolunteerRequest, getRequestOfOrg, clockInAction, getClockInStatus, getAllLogs, getAllVolunteers } from '@/Models/VolunteerModel'
 import { isFollowing, followOrg, unfollowOrg, getFollowersByOrgId } from '@/Models/followingModel'
 import { getUsernameFromId } from '@/Models/UserModel'
 

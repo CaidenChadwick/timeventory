@@ -23,9 +23,8 @@ export default function VolunteerRequests({
     acceptRequest,
     declineRequest,
 }: VolunteerRequestsProps) {
-    //alert(requests[0].userID + "\n" + requests[0].orgID + "\n" + requests[0].message)
     return (
-        <div className = "topBottomLine">
+        <div className="topBottomLine">
             <h2>Volunteer Requests</h2>
             {requests.length === 0 ? (
                 <p>No requests available.</p>
@@ -37,8 +36,7 @@ export default function VolunteerRequests({
                         <button onClick={async () => {
                             const status = await acceptRequest(request.userID, orgId);
                             if (status.success) {
-                                alert('Request accepted!');
-                                // Optionally refresh the request list or perform any other action
+                                window.location.reload(); // Refresh the page
                             } else {
                                 alert('Failed to accept request.');
                             }
@@ -48,8 +46,7 @@ export default function VolunteerRequests({
                         <button onClick={async () => {
                             const status = await declineRequest(request.userID, orgId);
                             if (status.success) {
-                                alert('Request declined.');
-                                // Optionally refresh the request list or perform any other action
+                                window.location.reload(); // Refresh the page
                             } else {
                                 alert('Failed to decline request.');
                             }

@@ -32,7 +32,7 @@ export default function VolunteerButton({
     };
 
     return (
-        <div>
+        <div className='nopadding'>
             {/* State 0: User is owner */}
             {state === 0 && (
                 <button

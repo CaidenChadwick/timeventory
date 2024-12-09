@@ -31,16 +31,21 @@ export default async function UrlInformation({
     if (orgInfo.success) {
         return (
             <div>
-                <p>{orgInfo.payload["organizationName"]}</p>
+                <p className='orange'>{orgInfo.payload["organizationName"]}</p>
                 <p>{orgInfo.payload["description"]}</p>
 
                 {orgEvents.success && orgEvents.payload ? (
                     <div>
-                        {orgEvents.payload.map((event: EventData) => (
-                            <a key={event.id} href={`./${params.organization}/events/${event.eventName}`}>
-                                {event.eventName}
-                            </a>
-                        ))}
+                        <p className='orange'>--- Events ---</p>
+                        {orgEvents.payload.length > 0 ? (
+                            orgEvents.payload.map((event: EventData) => (
+                                <p key={event.id}>
+                                    <a className='link' href={`./${params.organization}/events/${event.eventName}`}> {event.eventName}</a>
+                                </p>
+                            ))
+                        ) : (
+                            <p className = "grey">This Org Has No Events</p>
+                        )}
                     </div>
                 ) : null}
 
