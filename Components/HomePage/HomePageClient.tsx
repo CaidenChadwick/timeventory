@@ -24,7 +24,7 @@ export default function HomePageClient({ loggedIn, userOrganizations, suggestion
         <Container>
             <Row>
                 <Col>
-                    {loggedIn && userOrganizations &&
+                    {/* {loggedIn && userOrganizations &&
                         <ListGroup>
                             {userOrganizations.map(item => (
                                 <ListGroup.Item key={item.organizationName}>
@@ -34,7 +34,7 @@ export default function HomePageClient({ loggedIn, userOrganizations, suggestion
                                 </ListGroup.Item>
                             ))}
                         </ListGroup>
-                    }
+                    } */}
                 </Col>
                 <Col>
                     {suggestions &&
